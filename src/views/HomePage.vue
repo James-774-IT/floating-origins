@@ -17,8 +17,13 @@
           探索看不见的微生物王国，认识我们身体里的小小居民。这里有友善的益生菌朋友，也有调皮的病毒小怪兽，让我们一起开启奇妙的微观之旅吧！
         </p>
         <div class="search-box">
-          <input type="text" v-model="searchText" placeholder="搜索微生物.." />
-          <button class="search-btn">
+          <input
+            type="text"
+            v-model="searchText"
+            placeholder="搜索微生物.."
+            @keyup.enter="search"
+          />
+          <button class="search-btn" @click="search">
             <!-- 搜索图标 -->
             <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -206,6 +211,18 @@ const toggleVoiceRecognition = () => {
     // 开始识别
     recognition.start();
     isRecognizing.value = true;
+  }
+};
+
+// 百度搜索功能
+const search = () => {
+  if (searchText.value.trim()) {
+    // 百度搜索URL格式
+    const baiduUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(searchText.value.trim())}`;
+    // 打开新标签页进行搜索
+    window.open(baiduUrl, "_blank");
+    // 清空输入框
+    searchText.value = "";
   }
 };
 

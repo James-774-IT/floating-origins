@@ -107,4 +107,67 @@
 .nav-btn.active svg path {
   fill: #2563eb;
 }
+
+/* 响应式导航栏设计 */
+
+/* 移动设备 (< 768px) */
+@media (max-width: 767px) {
+  .navbar {
+    padding: 8px 10px;
+  }
+
+  .navbar-logo {
+    font-size: 14px;
+  }
+
+  .navbar-logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar-menu {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .icon1 {
+    height: 14px;
+  }
+
+  .icon2 {
+    height: 18px;
+  }
+
+  .nav-btn svg {
+    margin-right: 2px;
+  }
+}
+
+/* 平板设备 (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .navbar-menu {
+    gap: 10px;
+  }
+
+  .nav-btn {
+    padding: 7px 10px;
+    font-size: 14px;
+  }
+
+  .icon1 {
+    height: 16px;
+  }
+
+  .icon2 {
+    height: 22px;
+  }
+}
 </style>

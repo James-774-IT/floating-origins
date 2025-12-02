@@ -4,9 +4,7 @@
     <div v-if="gameState === 'select-image'" class="select-image-container">
       <h2 class="title">选择拼图图片</h2>
       <div class="image-carousel">
-        <button class="carousel-btn prev" @click="prevImage" aria-label="上一张图片">
-          &lt;
-        </button>
+        <button class="carousel-btn prev" @click="prevImage" aria-label="上一张图片">&lt;</button>
         <div class="carousel-wrapper">
           <div class="carousel-items" :style="carouselStyle">
             <div
@@ -21,13 +19,9 @@
             </div>
           </div>
         </div>
-        <button class="carousel-btn next" @click="nextImage" aria-label="下一张图片">
-          &gt;
-        </button>
+        <button class="carousel-btn next" @click="nextImage" aria-label="下一张图片">&gt;</button>
       </div>
-      <button class="confirm-btn" @click="confirmImage" :disabled="!selectedImage">
-        确认选择
-      </button>
+      <button class="confirm-btn" @click="confirmImage" :disabled="!selectedImage">确认选择</button>
     </div>
 
     <!-- 难度选择界面 -->
@@ -48,23 +42,25 @@
           </div>
         </div>
       </div>
-      <button class="start-btn" @click="startGame" :disabled="!selectedDifficulty">
-        开始游戏
-      </button>
+      <button class="start-btn" @click="startGame" :disabled="!selectedDifficulty">开始游戏</button>
     </div>
 
     <!-- 游戏界面 -->
     <div v-if="gameState === 'playing'" class="game-container">
       <!-- 顶部信息栏 -->
       <div class="top-bar">
-        <div class="back-btn" @click="backToSelectImage" aria-label="返回选择拼图">返回选择拼图</div>
+        <div class="back-btn" @click="backToSelectImage" aria-label="返回选择拼图">
+          返回选择拼图
+        </div>
         <div class="timer">
           <span class="label">用时：</span>
           <span class="time">{{ formattedTime }}</span>
         </div>
         <div class="success-count">
           <span class="label">已成功完成：</span>
-          <span class="count" :class="{ 'updated': isCountUpdated }">{{ gameRecords.successCount || 0 }}次</span>
+          <span class="count" :class="{ updated: isCountUpdated }"
+            >{{ gameRecords.successCount || 0 }}次</span
+          >
           <span class="game-status" :class="gameStatus.value">{{ gameStatusText }}</span>
         </div>
         <div class="reset-btn" @click="resetGame" aria-label="重置游戏">重置游戏</div>
@@ -112,7 +108,7 @@
           <div class="instructions-section">
             <h3 @click="toggleInstructions">
               如何玩
-              <span class="toggle-icon">{{ instructionsOpen ? '▼' : '▶' }}</span>
+              <span class="toggle-icon">{{ instructionsOpen ? "▼" : "▶" }}</span>
             </h3>
             <div v-if="instructionsOpen" class="instructions-content">
               <ul>
@@ -128,7 +124,12 @@
 
       <!-- 退出提示 -->
       <div v-if="showExitConfirm" class="exit-confirm-overlay">
-        <div class="exit-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="exit-confirm-title">
+        <div
+          class="exit-confirm-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-confirm-title"
+        >
           <h3 id="exit-confirm-title">拼图还未完成！</h3>
           <p>退出将不保存此次记录</p>
           <div class="exit-confirm-buttons">
@@ -151,10 +152,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 
 // 游戏状态管理
-const gameState = ref('select-image'); // select-image, select-difficulty, playing
+const gameState = ref("select-image"); // select-image, select-difficulty, playing
 const currentImageIndex = ref(0);
 const selectedImage = ref(null);
 const selectedDifficulty = ref(null);
@@ -167,60 +168,75 @@ const puzzleArea = ref(null);
 // 图片数据
 const images = [
   {
-    src: new URL('../assets/homeIMG/IMG@rsj.png', import.meta.url).href,
-    alt: '拼图图片1',
-    title: '乳酸菌'
+    src: new URL("../assets/jigsawIMG/IMG@1.png", import.meta.url).href,
+    alt: "拼图图片1",
+    title: "噬菌体",
   },
   {
-    src: new URL('../assets/homeIMG/IMG@dcgj.png', import.meta.url).href,
-    alt: '拼图图片2',
-    title: '大肠杆菌'
+    src: new URL("../assets/jigsawIMG/IMG@2.png", import.meta.url).href,
+    alt: "拼图图片2",
+    title: "乳酸菌",
   },
   {
-    src: new URL('../assets/homeIMG/IMG@lgbd.png', import.meta.url).href,
-    alt: '拼图图片3',
-    title: '流感病毒'
+    src: new URL("../assets/jigsawIMG/IMG@3.png", import.meta.url).href,
+    alt: "拼图图片3",
+    title: "流放线菌",
   },
   {
-    src: new URL('../assets/homeIMG/IMG@jmj.png', import.meta.url).href,
-    alt: '拼图图片4',
-    title: '酵母菌'
+    src: new URL("../assets/jigsawIMG/IMG@4.png", import.meta.url).href,
+    alt: "拼图图片4",
+    title: "草履虫",
   },
   {
-    src: new URL('../assets/homeIMG/IMG@lqj.png', import.meta.url).href,
-    alt: '拼图图片5',
-    title: '链球菌'
+    src: new URL("../assets/jigsawIMG/IMG@5.png", import.meta.url).href,
+    alt: "拼图图片5",
+    title: " 酵母菌",
   },
   {
-    src: new URL('../assets/homeIMG/IMG@sjt.png', import.meta.url).href,
-    alt: '拼图图片6',
-    title: '噬菌体'
-  }
+    src: new URL("../assets/jigsawIMG/IMG@6.png", import.meta.url).href,
+    alt: "拼图图片6",
+    title: "大肠杆菌",
+  },
+  {
+    src: new URL("../assets/jigsawIMG/IMG@7.png", import.meta.url).href,
+    alt: "拼图图片7",
+    title: " 支原体",
+  },
+  {
+    src: new URL("../assets/jigsawIMG/IMG@8.png", import.meta.url).href,
+    alt: "拼图图片8",
+    title: " 蓝细菌（蓝藻）",
+  },
+  {
+    src: new URL("../assets/jigsawIMG/IMG@9.png", import.meta.url).href,
+    alt: "拼图图片9",
+    title: " 衣原体",
+  },
 ];
 
 // 难度数据
 const difficulties = [
   {
-    level: 'easy',
-    name: '简单',
+    level: "easy",
+    name: "简单",
     gridSize: 3,
-    estimatedTime: '5-10分钟',
-    timeRange: [5, 10]
+    estimatedTime: "5-10分钟",
+    timeRange: [5, 10],
   },
   {
-    level: 'medium',
-    name: '一般',
+    level: "medium",
+    name: "一般",
     gridSize: 5,
-    estimatedTime: '15-25分钟',
-    timeRange: [15, 25]
+    estimatedTime: "15-25分钟",
+    timeRange: [15, 25],
   },
   {
-    level: 'hard',
-    name: '困难',
+    level: "hard",
+    name: "困难",
     gridSize: 10,
-    estimatedTime: '30-60分钟',
-    timeRange: [30, 60]
-  }
+    estimatedTime: "30-60分钟",
+    timeRange: [30, 60],
+  },
 ];
 
 // 计时器
@@ -231,11 +247,11 @@ const timerInterval = ref(null);
 // 游戏记录
 const gameRecords = ref({
   successCount: 0,
-  lastCompletionTime: null
+  lastCompletionTime: null,
 });
 
 // 游戏状态
-const gameStatus = ref('not-started'); // not-started, playing, completed
+const gameStatus = ref("not-started"); // not-started, playing, completed
 
 // 计数更新动画状态
 const isCountUpdated = ref(false);
@@ -256,23 +272,23 @@ const currentDifficulty = ref(null);
 const formattedTime = computed(() => {
   const minutes = Math.floor(elapsedTime.value / 60);
   const seconds = elapsedTime.value % 60;
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 });
 
 const carouselStyle = computed(() => {
   const offset = -currentImageIndex.value * 300;
   return {
-    transform: `translateX(${offset}px)`
+    transform: `translateX(${offset}px)`,
   };
 });
 
 const gameStatusText = computed(() => {
-  if (gameState.value !== 'playing') {
-    return '还未开始';
-  } else if (gameStatus.value === 'completed' || showCompletion.value) {
-    return '游戏已完成';
+  if (gameState.value !== "playing") {
+    return "还未开始";
+  } else if (gameStatus.value === "completed" || showCompletion.value) {
+    return "游戏已完成";
   } else {
-    return '游戏进行中';
+    return "游戏进行中";
   }
 });
 
@@ -292,14 +308,14 @@ const selectImage = (index) => {
 
 const confirmImage = () => {
   if (selectedImage.value) {
-    gameState.value = 'select-difficulty';
+    gameState.value = "select-difficulty";
   }
 };
 
 // 难度选择相关方法
 const selectDifficulty = (level) => {
   selectedDifficulty.value = level;
-  const difficulty = difficulties.find(d => d.level === level);
+  const difficulty = difficulties.find((d) => d.level === level);
   if (difficulty) {
     gridSize.value = difficulty.gridSize;
     currentDifficulty.value = difficulty;
@@ -309,8 +325,8 @@ const selectDifficulty = (level) => {
 // 游戏初始化
 const startGame = () => {
   if (selectedDifficulty.value && selectedImage.value) {
-    gameState.value = 'playing';
-    gameStatus.value = 'playing';
+    gameState.value = "playing";
+    gameStatus.value = "playing";
     initPuzzle();
     startTimer();
     loadGameRecords();
@@ -320,7 +336,7 @@ const startGame = () => {
 // 拼图初始化
 const initPuzzle = () => {
   puzzlePieces.value = [];
-  const difficulty = difficulties.find(d => d.level === selectedDifficulty.value);
+  const difficulty = difficulties.find((d) => d.level === selectedDifficulty.value);
   if (!difficulty) return;
 
   // 更新gridSize.value
@@ -340,7 +356,7 @@ const initPuzzle = () => {
         currentCol: -1,
         x: 0,
         y: 0,
-        isCorrect: false
+        isCorrect: false,
       };
       puzzlePieces.value.push(piece);
     }
@@ -388,13 +404,13 @@ const startDrag = (event, index) => {
 
   dragOffset.value = {
     x: clientX - rect.left - piece.x,
-    y: clientY - rect.top - piece.y
+    y: clientY - rect.top - piece.y,
   };
 
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', endDrag);
-  document.addEventListener('touchmove', drag);
-  document.addEventListener('touchend', endDrag);
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("touchmove", drag);
+  document.addEventListener("touchend", endDrag);
 };
 
 const drag = (event) => {
@@ -429,7 +445,10 @@ const endDrag = () => {
   const targetX = targetCol * pieceSize.value;
   const targetY = targetRow * pieceSize.value;
 
-  if (Math.abs(piece.x - targetX) <= snapThreshold && Math.abs(piece.y - targetY) <= snapThreshold) {
+  if (
+    Math.abs(piece.x - targetX) <= snapThreshold &&
+    Math.abs(piece.y - targetY) <= snapThreshold
+  ) {
     // 直接吸附到目标位置，不交换其他碎片
     piece.x = targetX;
     piece.y = targetY;
@@ -445,10 +464,10 @@ const endDrag = () => {
   checkCompletion();
 
   selectedPieceIndex.value = -1;
-  document.removeEventListener('mousemove', drag);
-  document.removeEventListener('mouseup', endDrag);
-  document.removeEventListener('touchmove', drag);
-  document.removeEventListener('touchend', endDrag);
+  document.removeEventListener("mousemove", drag);
+  document.removeEventListener("mouseup", endDrag);
+  document.removeEventListener("touchmove", drag);
+  document.removeEventListener("touchend", endDrag);
 };
 
 // 更新碎片是否正确
@@ -462,13 +481,13 @@ const updatePiecesCorrectness = () => {
 
 // 计算完成度
 const calculateProgress = () => {
-  const correctCount = puzzlePieces.value.filter(piece => piece.isCorrect).length;
+  const correctCount = puzzlePieces.value.filter((piece) => piece.isCorrect).length;
   progress.value = Math.round((correctCount / puzzlePieces.value.length) * 100);
 };
 
 // 检查是否完成
 const checkCompletion = () => {
-  const allCorrect = puzzlePieces.value.every(piece => piece.isCorrect);
+  const allCorrect = puzzlePieces.value.every((piece) => piece.isCorrect);
   if (allCorrect) {
     completeGame();
   }
@@ -478,7 +497,7 @@ const checkCompletion = () => {
 const completeGame = () => {
   stopTimer();
   showCompletion.value = true;
-  gameStatus.value = 'completed';
+  gameStatus.value = "completed";
   updateGameRecords();
 };
 
@@ -503,7 +522,7 @@ const stopTimer = () => {
 const initializeGameRecord = () => {
   gameRecords.value = {
     successCount: 0,
-    lastCompletionTime: null
+    lastCompletionTime: null,
   };
   saveGameRecord(gameRecords.value);
 };
@@ -511,18 +530,18 @@ const initializeGameRecord = () => {
 // 保存游戏记录到localStorage
 const saveGameRecord = (record) => {
   try {
-    localStorage.setItem('jigsawGameRecords', JSON.stringify(record));
+    localStorage.setItem("jigsawGameRecords", JSON.stringify(record));
     // 同时保存备份
-    localStorage.setItem('jigsawGameRecordsBackup', JSON.stringify(record));
+    localStorage.setItem("jigsawGameRecordsBackup", JSON.stringify(record));
   } catch (error) {
-    console.error('保存游戏记录失败:', error);
+    console.error("保存游戏记录失败:", error);
   }
 };
 
 // 从localStorage获取游戏记录
 const getGameRecord = () => {
   try {
-    let records = localStorage.getItem('jigsawGameRecords');
+    let records = localStorage.getItem("jigsawGameRecords");
 
     // 数据验证
     if (records) {
@@ -530,7 +549,7 @@ const getGameRecord = () => {
       if (validateGameRecord(parsed)) {
         return parsed;
       } else {
-        console.error('游戏记录数据格式错误，尝试恢复备份');
+        console.error("游戏记录数据格式错误，尝试恢复备份");
         return restoreGameRecord();
       }
     } else {
@@ -539,24 +558,24 @@ const getGameRecord = () => {
       return gameRecords.value;
     }
   } catch (error) {
-    console.error('获取游戏记录失败:', error);
+    console.error("获取游戏记录失败:", error);
     return restoreGameRecord();
   }
 };
 
 // 验证游戏记录数据格式
 const validateGameRecord = (record) => {
-  if (!record || typeof record !== 'object') {
+  if (!record || typeof record !== "object") {
     return false;
   }
 
   // 验证successCount字段
-  if (typeof record.successCount !== 'number' || record.successCount < 0) {
+  if (typeof record.successCount !== "number" || record.successCount < 0) {
     return false;
   }
 
   // 验证lastCompletionTime字段
-  if (record.lastCompletionTime !== null && typeof record.lastCompletionTime !== 'string') {
+  if (record.lastCompletionTime !== null && typeof record.lastCompletionTime !== "string") {
     return false;
   }
 
@@ -574,7 +593,7 @@ const validateGameRecord = (record) => {
 // 从备份恢复游戏记录
 const restoreGameRecord = () => {
   try {
-    const backup = localStorage.getItem('jigsawGameRecordsBackup');
+    const backup = localStorage.getItem("jigsawGameRecordsBackup");
     if (backup) {
       const parsed = JSON.parse(backup);
       if (validateGameRecord(parsed)) {
@@ -584,7 +603,7 @@ const restoreGameRecord = () => {
       }
     }
   } catch (error) {
-    console.error('恢复游戏记录失败:', error);
+    console.error("恢复游戏记录失败:", error);
   }
 
   // 恢复失败，初始化默认记录
@@ -615,15 +634,15 @@ const resetGame = () => {
   initPuzzle();
   stopTimer();
   elapsedTime.value = 0;
-  gameStatus.value = 'playing';
+  gameStatus.value = "playing";
   startTimer();
 };
 
 // 再玩一次
 const playAgain = () => {
   showCompletion.value = false;
-  gameState.value = 'select-image';
-  gameStatus.value = 'not-started';
+  gameState.value = "select-image";
+  gameStatus.value = "not-started";
   selectedImage.value = null;
   selectedDifficulty.value = null;
   elapsedTime.value = 0;
@@ -632,7 +651,7 @@ const playAgain = () => {
 
 // 返回选择拼图界面
 const backToSelectImage = () => {
-  if (gameState.value === 'playing' && gameStatus.value === 'playing' && !showCompletion.value) {
+  if (gameState.value === "playing" && gameStatus.value === "playing" && !showCompletion.value) {
     showExitConfirm.value = true;
   } else {
     navigateToSelectImage();
@@ -641,7 +660,7 @@ const backToSelectImage = () => {
 
 // 导航到选择拼图界面
 const navigateToSelectImage = () => {
-  gameState.value = 'select-image';
+  gameState.value = "select-image";
   selectedImage.value = null;
   selectedDifficulty.value = null;
   elapsedTime.value = 0;
@@ -664,7 +683,7 @@ const confirmExit = () => {
 
 // 监听页面离开事件
 const handleBeforeUnload = (event) => {
-  if (gameState.value === 'playing' && gameStatus.value === 'playing' && !showCompletion.value) {
+  if (gameState.value === "playing" && gameStatus.value === "playing" && !showCompletion.value) {
     // 浏览器安全策略要求必须返回字符串
     event.preventDefault();
     event.returnValue = "拼图还未完成！退出将不保存此次记录";
@@ -674,7 +693,7 @@ const handleBeforeUnload = (event) => {
 
 // 监听浏览器后退按钮
 const handlePopState = () => {
-  if (gameState.value === 'playing' && gameStatus.value === 'playing' && !showCompletion.value) {
+  if (gameState.value === "playing" && gameStatus.value === "playing" && !showCompletion.value) {
     // 显示自定义退出提示框
     showExitConfirm.value = true;
     // 阻止默认的后退行为
@@ -684,18 +703,16 @@ const handlePopState = () => {
 
 // 添加页面可见性变化监听，处理用户切换标签页的情况
 const handleVisibilityChange = () => {
-  if (document.hidden && gameState.value === 'playing' && !showCompletion.value) {
+  if (document.hidden && gameState.value === "playing" && !showCompletion.value) {
     // 可以在这里添加暂停游戏等逻辑
     console.log("游戏已暂停");
   }
 };
 
-
-
 // 缩略图预览
 const togglePreview = () => {
   // 这里可以实现大图预览功能
-  alert('大图预览功能');
+  alert("大图预览功能");
 };
 
 // 操作提示
@@ -705,7 +722,7 @@ const toggleInstructions = () => {
 
 // 获取碎片样式
 const getPieceStyle = (piece, index) => {
-  const difficulty = difficulties.find(d => d.level === selectedDifficulty.value);
+  const difficulty = difficulties.find((d) => d.level === selectedDifficulty.value);
   if (!difficulty || !selectedImage.value) return {};
 
   const backgroundPositionX = -piece.originalCol * pieceSize.value;
@@ -717,19 +734,21 @@ const getPieceStyle = (piece, index) => {
     left: `${piece.x}px`,
     top: `${piece.y}px`,
     backgroundImage: `url(${selectedImage.value.src})`,
-    backgroundSize: `${difficulty.gridSize * pieceSize.value}px ${difficulty.gridSize * pieceSize.value}px`,
+    backgroundSize: `${difficulty.gridSize * pieceSize.value}px ${
+      difficulty.gridSize * pieceSize.value
+    }px`,
     backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`,
-    transition: 'all 0.3s ease'
+    transition: "all 0.3s ease",
   };
 };
 
 // 键盘事件处理
 const handleKeyDown = (event) => {
   if (showExitConfirm.value) {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       // Enter键触发默认按钮（继续拼图）
       continueGame();
-    } else if (event.key === 'Escape') {
+    } else if (event.key === "Escape") {
       // Esc键关闭提示框
       continueGame();
     }
@@ -738,18 +757,18 @@ const handleKeyDown = (event) => {
 
 // 生命周期钩子
 onMounted(() => {
-  window.addEventListener('beforeunload', handleBeforeUnload);
-  window.addEventListener('popstate', handlePopState);
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-  document.addEventListener('keydown', handleKeyDown);
+  window.addEventListener("beforeunload", handleBeforeUnload);
+  window.addEventListener("popstate", handlePopState);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  document.addEventListener("keydown", handleKeyDown);
   loadGameRecords();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('beforeunload', handleBeforeUnload);
-  window.removeEventListener('popstate', handlePopState);
-  document.removeEventListener('visibilitychange', handleVisibilityChange);
-  document.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener("beforeunload", handleBeforeUnload);
+  window.removeEventListener("popstate", handlePopState);
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+  document.removeEventListener("keydown", handleKeyDown);
   stopTimer();
 });
 </script>
@@ -871,7 +890,7 @@ onBeforeUnmount(() => {
 }
 
 .confirm-btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -925,7 +944,7 @@ onBeforeUnmount(() => {
 }
 
 .difficulty-option.active {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   background-color: #f0f8f0;
   box-shadow: 0 8px 16px rgba(76, 175, 80, 0.3);
 }
@@ -944,7 +963,7 @@ onBeforeUnmount(() => {
 
 .grid-size {
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .estimated-time {
@@ -953,7 +972,7 @@ onBeforeUnmount(() => {
 }
 
 .start-btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -991,14 +1010,16 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 
-.timer, .success-count {
+.timer,
+.success-count {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.timer .label, .success-count .label {
+.timer .label,
+.success-count .label {
   font-weight: bold;
   color: #333;
 }
@@ -1006,7 +1027,7 @@ onBeforeUnmount(() => {
 .timer .time {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .success-count .count {
@@ -1017,7 +1038,7 @@ onBeforeUnmount(() => {
 
 .success-count .count.updated {
   animation: countUpdate 0.5s ease-in-out;
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: bold;
 }
 
@@ -1037,7 +1058,7 @@ onBeforeUnmount(() => {
 }
 
 .success-count .game-status.completed {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -1053,7 +1074,8 @@ onBeforeUnmount(() => {
   }
 }
 
-.back-btn, .reset-btn {
+.back-btn,
+.reset-btn {
   background-color: #f44336;
   color: white;
   border: none;
@@ -1063,12 +1085,13 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
 }
 
-.back-btn:hover, .reset-btn:hover {
+.back-btn:hover,
+.reset-btn:hover {
   background-color: #da190b;
 }
 
 .back-btn {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 .back-btn:hover {
@@ -1090,7 +1113,7 @@ onBeforeUnmount(() => {
   min-width: 800px;
   height: 610px;
   background-color: #fafafa;
-  border: 4px solid #2196F3;
+  border: 4px solid #2196f3;
   /* border-radius: 8px; */
   overflow: visible;
   display: flex;
@@ -1103,7 +1126,7 @@ onBeforeUnmount(() => {
   width: 600px;
   height: 606px;
   background-color: #f0f0f0;
-  border: 4px solid #4CAF50;
+  border: 4px solid #4caf50;
   /* border-radius: 8px; */
   overflow: visible;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1126,7 +1149,7 @@ onBeforeUnmount(() => {
 }
 
 .puzzle-piece.is-selected {
-  border: 2px solid #4CAF50;
+  border: 2px solid #4caf50;
   box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
   z-index: 10;
 }
@@ -1142,13 +1165,17 @@ onBeforeUnmount(() => {
   gap: 20px;
 }
 
-.preview-section, .progress-section, .instructions-section {
+.preview-section,
+.progress-section,
+.instructions-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.preview-section h3, .progress-section h3, .instructions-section h3 {
+.preview-section h3,
+.progress-section h3,
+.instructions-section h3 {
   margin-top: 0;
   color: #333;
   cursor: pointer;
@@ -1188,14 +1215,14 @@ onBeforeUnmount(() => {
 
 .progress-fill {
   height: 100%;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   transition: width 0.3s ease;
 }
 
 .progress-text {
   text-align: center;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
   font-size: 1.2rem;
 }
 
@@ -1266,7 +1293,7 @@ onBeforeUnmount(() => {
 }
 
 .btn.continue {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -1284,7 +1311,7 @@ onBeforeUnmount(() => {
 }
 
 .btn.play-again {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   margin-top: 20px;
   padding: 12px 24px;
@@ -1325,7 +1352,7 @@ onBeforeUnmount(() => {
 
 .completion-time {
   font-size: 2rem;
-  color: #4CAF50;
+  color: #4caf50;
   margin-bottom: 30px;
   font-weight: bold;
 }

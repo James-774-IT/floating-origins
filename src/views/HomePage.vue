@@ -260,7 +260,8 @@ const microbes = ref([
 /* 全局基础样式 */
 .home-page {
   background-color: #f0f8ff;
-  width: 1440px;
+  /* width: 1440px; */
+  width: 100%;
   margin: 0 auto;
   min-height: 100vh;
   font-family: "微软雅黑", sans-serif;

@@ -16,7 +16,7 @@
         <p class="section-desc">
           欢迎来到家长专区！这里有丰富的教育资源和亲子活动，帮助您更好地引导孩子了解微生物世界。
         </p>
-        
+
         <!-- 家长专区卡片 -->
         <div class="parent-cards">
           <!-- 教育资源 -->
@@ -89,7 +89,7 @@
 /* 全局基础样式 */
 .parent-page {
   background-color: #f0f8ff;
-  width: 1440px;
+  width: 100%;
   margin: 0 auto;
   font-family: "微软雅黑", sans-serif;
   color: #333;

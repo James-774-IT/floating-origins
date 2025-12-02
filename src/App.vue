@@ -17,10 +17,10 @@ import TimedReminder from "./components/TimedReminder.vue"; // 导入定时提�
 <style>
 /* 全局样式 */
 .app-container {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background-color: #f0f8ff;
   width: 100%;
-  max-width: 1440px;
+  /* max-width: 1440px; */
   margin: 0 auto;
 }
 </style>

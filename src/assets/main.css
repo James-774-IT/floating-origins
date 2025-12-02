@@ -1,9 +1,9 @@
-@import './base.css';
+@import "./base.css";
 
 #app {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   font-weight: normal;
 }
 
@@ -21,15 +21,27 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+/* 响应式断点设计 */
 
+/* 移动设备 (< 768px) */
+@media (max-width: 767px) {
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    padding: 0.5rem;
+  }
+}
+
+/* 平板设备 (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #app {
+    padding: 1rem;
+    max-width: 90%;
+  }
+}
+
+/* 桌面设备 (≥ 1024px) */
+@media (min-width: 1024px) {
+  #app {
+    max-width: 1280px;
     padding: 0 2rem;
   }
 }

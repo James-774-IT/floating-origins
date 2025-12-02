@@ -82,7 +82,7 @@
         <div class="microbes-cards">
           <!-- 循环渲染微生物卡片 -->
           <div class="microbe-card" v-for="(item, idx) in microbes" :key="idx">
-            <!-- 替换为实际微生物图标路径 -->
+            <!-- 微生物图标路径 -->
             <div class="microbe-card-color"><img :src="item.img" :alt="item.name" /></div>
             <h4>{{ item.name }}</h4>
             <span class="microbe-tag" :style="{ background: item.tagBg }">{{ item.tag }}</span>
@@ -396,7 +396,7 @@ const microbes = ref([
 .voice-wave {
   position: absolute;
   right: 5px;
-  top: 50%;
+  /* top: 40%; */
   transform: translateY(-50%);
   display: flex;
   align-items: center;

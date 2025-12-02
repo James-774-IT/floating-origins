@@ -1157,6 +1157,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* 限制最大高度，超出部分滚动 */
   max-height: 300px;
   overflow-y: auto;
 }

@@ -68,7 +68,7 @@
         <div class="modal-body logs-body">
           <div class="logs-container">
             <div v-for="(log, index) in logs" :key="index" class="log-item">
-              <span class="log-time">{{ log.time }}</span>
+              <span class="log-time">{{ formatLogTime(log.time) }}</span>
               <span :class="['log-type', log.type]">{{
                 log.type === "reminder" ? "提示" : "警告"
               }}</span>
@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 // 状态管理
 const showReminder = ref(false);
@@ -130,6 +130,19 @@ let backgroundTimer = null;
 
 // 计算当前时间格式
 const formatDateTime = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+// 格式化日志时间（UTC转本地时间）
+const formatLogTime = (isoTime) => {
+  const date = new Date(isoTime);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -326,7 +339,6 @@ const calculateNextReminderTime = () => {
 const calculateNextWarningTime = () => {
   const now = new Date();
   const hour = now.getHours();
-  const minute = now.getMinutes();
 
   // 每日0:00至6:00，每小时一次，最后一次在5:00
   if (hour >= 0 && hour < 6) {
@@ -559,6 +571,9 @@ onUnmounted(() => {
   width: 90%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: modalFadeIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
 }
 
 /* 提示框样式 */
@@ -583,7 +598,6 @@ onUnmounted(() => {
 .logs-modal {
   border-left: 5px solid #6b7280;
   background-color: #f9fafb;
-  max-height: 80vh;
 }
 
 /* 模态窗口头部 */
@@ -666,12 +680,17 @@ onUnmounted(() => {
 /* 模态窗口内容 */
 .modal-body {
   margin-bottom: 20px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 日志内容区 */
 .logs-body {
-  max-height: 60vh;
+  flex: 1;
   overflow-y: auto;
+  max-height: none;
 }
 
 .logs-container {

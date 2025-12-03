@@ -245,6 +245,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
+import { fullscreenManager, fullscreenAPI } from "../utils/fullscreenManager";
 
 // 视频播放器引用
 const videoPlayer = ref(null);
@@ -254,9 +255,11 @@ const isPlaying = ref(false);
 const isLoading = ref(false);
 const hasError = ref(false);
 const errorMessage = ref("");
-const isFullscreen = ref(false);
 const currentVideoIndex = ref(0);
 const uiVisible = ref(true);
+
+// 使用全屏管理器的状态
+const isFullscreen = computed(() => fullscreenManager.isFullscreen.value);
 
 // UI自动隐藏定时器
 let uiHideTimer = null;
@@ -546,83 +549,54 @@ const reloadVideo = () => {
 };
 
 // 全屏切换
-const toggleFullscreen = () => {
-  const container = document.querySelector(".video-player-container");
+const toggleFullscreen = async () => {
+  try {
+    fullscreenManager.clearError();
+    fullscreenManager.isTransitioning.value = true;
 
-  // 保存当前播放位置
-  const currentTime = videoPlayer.value ? videoPlayer.value.currentTime : 0;
-  const isPlayingState = isPlaying.value;
+    // 保存当前播放位置
+    const currentTime = videoPlayer.value ? videoPlayer.value.currentTime : 0;
+    const isPlayingState = isPlaying.value;
 
-  if (!document.fullscreenElement) {
-    // 进入全屏
-    if (container.requestFullscreen) {
-      container.requestFullscreen().then(() => {
-        // 恢复播放位置和状态
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
+    const container = document.querySelector(".video-player-container");
+    const isCurrentlyFullscreen = !!fullscreenAPI.getFullscreenElement();
+
+    if (!isCurrentlyFullscreen) {
+      // 进入全屏前保存滚动位置
+      fullscreenManager.saveScrollPositions();
+
+      // 进入全屏
+      await fullscreenAPI.requestFullscreen(container);
+
+      // 恢复播放位置和状态
+      if (videoPlayer.value) {
+        videoPlayer.value.currentTime = currentTime;
+        if (isPlayingState) {
+          videoPlayer.value.play();
         }
-      });
-    } else if (container.webkitRequestFullscreen) {
-      container.webkitRequestFullscreen();
-      // WebKit不支持Promise，使用setTimeout恢复状态
-      setTimeout(() => {
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
+      }
+    } else {
+      // 退出全屏
+      await fullscreenAPI.exitFullscreen();
+
+      // 恢复播放位置和状态
+      if (videoPlayer.value) {
+        videoPlayer.value.currentTime = currentTime;
+        if (isPlayingState) {
+          videoPlayer.value.play();
         }
-      }, 100);
-    } else if (container.msRequestFullscreen) {
-      container.msRequestFullscreen();
-      // MS不支持Promise，使用setTimeout恢复状态
-      setTimeout(() => {
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
-        }
-      }, 100);
+      }
     }
-  } else {
-    // 退出全屏
-    if (document.exitFullscreen) {
-      document.exitFullscreen().then(() => {
-        // 恢复播放位置和状态
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
-        }
-      });
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-      // WebKit不支持Promise，使用setTimeout恢复状态
-      setTimeout(() => {
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
-        }
-      }, 100);
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-      // MS不支持Promise，使用setTimeout恢复状态
-      setTimeout(() => {
-        if (videoPlayer.value) {
-          videoPlayer.value.currentTime = currentTime;
-          if (isPlayingState) {
-            videoPlayer.value.play();
-          }
-        }
-      }, 100);
-    }
+  } catch (error) {
+    console.error("Fullscreen operation failed:", error);
+    fullscreenManager.error.value = error.message;
+    // 显示友好提示
+    alert(`全屏操作失败: ${error.message}`);
+  } finally {
+    // 使用requestAnimationFrame确保状态更新在渲染循环中
+    requestAnimationFrame(() => {
+      fullscreenManager.isTransitioning.value = false;
+    });
   }
 };
 
@@ -649,9 +623,10 @@ const resetUIHideTimer = () => {
 
 // 全屏状态变化处理
 const handleFullscreenChange = () => {
-  isFullscreen.value = !!document.fullscreenElement;
+  const newFullscreenState = !!fullscreenAPI.getFullscreenElement();
+  fullscreenManager.isFullscreen.value = newFullscreenState;
 
-  if (isFullscreen.value) {
+  if (newFullscreenState) {
     // 进入全屏，启动UI隐藏定时器
     resetUIHideTimer();
   } else {
@@ -661,6 +636,8 @@ const handleFullscreenChange = () => {
       uiHideTimer = null;
     }
     showUI();
+    // 恢复滚动位置
+    fullscreenManager.restoreScrollPositions();
   }
 };
 
@@ -681,9 +658,7 @@ onMounted(() => {
   videoPlayer.value.volume = volume.value;
 
   // 监听全屏变化
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-  document.addEventListener("msfullscreenchange", handleFullscreenChange);
+  fullscreenAPI.addFullscreenChangeListener(handleFullscreenChange);
 
   // 监听鼠标移动和点击事件，重置UI隐藏定时器
   const videoContainer = document.querySelector(".video-player-container");
@@ -710,9 +685,7 @@ onUnmounted(() => {
   videoPlayer.value.removeEventListener("ended", handleEnded);
 
   // 移除全屏监听器
-  document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
-  document.removeEventListener("msfullscreenchange", handleFullscreenChange);
+  fullscreenAPI.removeFullscreenChangeListener(handleFullscreenChange);
 
   // 移除鼠标事件监听器
   const videoContainer = document.querySelector(".video-player-container");

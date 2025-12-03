@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import HomePage from "../views/HomePage.vue"; // 导入 HomePage 组件
 import MicrobialPage from "../views/MicrobialPage.vue"; // 导入微生物世界组件
 import ParentPage from "../views/ParentPage.vue"; // 导入家长专区组件
@@ -27,7 +27,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // 使用hash模式，支持直接打开HTML文件
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

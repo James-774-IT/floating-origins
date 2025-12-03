@@ -6,6 +6,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // 使用相对路径，支持直接打开HTML文件
+  base: './',
   plugins: [
     vue(),
     vueDevTools(),

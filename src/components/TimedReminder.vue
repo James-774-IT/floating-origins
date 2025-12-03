@@ -85,7 +85,7 @@
 
     <!-- 免打扰设置 -->
     <div class="settings-panel">
-      <button class="settings-btn" @click="toggleSettings">⚙️ 设置</button>
+      <button class="settings-btn" @click="toggleSettings">⚙️</button>
       <div v-if="showSettings" class="settings-content">
         <div class="setting-item">
           <label for="do-not-disturb">免打扰模式</label>
@@ -116,8 +116,8 @@ const showLogs = ref(false);
 const showSettings = ref(false);
 const doNotDisturb = ref(false);
 const currentTime = ref("");
-const reminderMessage = ref("时间不早啦，该睡觉觉咯，明天再来探索吧！");
-const warningMessage = ref("你不是个好孩子！");
+const reminderMessage = ref("🤗时间不早啦，该睡觉觉咯😴，明天再来探索吧！🐼");
+const warningMessage = ref("我要生气了💢，快去睡觉❗❗❗，我相信你是最乖的好宝宝😘");
 
 // 日志管理
 const logs = ref([]);
@@ -178,7 +178,13 @@ const showReminderModal = () => {
     return;
   }
 
-  currentTime.value = formatDateTime(new Date());
+  const now = new Date();
+  currentTime.value = formatDateTime(now);
+  // 添加前缀：现在已经“系统时间”了
+  const timePrefix = `现在已经“${String(now.getHours()).padStart(2, "0")}:${String(
+    now.getMinutes()
+  ).padStart(2, "0")}”了`;
+  reminderMessage.value = `${timePrefix}${reminderMessage.value}`;
   showReminder.value = true;
   logEvent("reminder", "成功显示");
 };
@@ -190,6 +196,12 @@ const showWarningModal = () => {
     return;
   }
 
+  const now = new Date();
+  // 添加前缀：现在已经“系统时间”了
+  const timePrefix = `⏱️已经“${String(now.getHours()).padStart(2, "0")}:${String(
+    now.getMinutes()
+  ).padStart(2, "0")}”哟，`;
+  warningMessage.value = `${timePrefix}${warningMessage.value}`;
   showWarning.value = true;
   logEvent("warning", "成功显示");
 };
@@ -227,13 +239,16 @@ const requestNotificationPermission = async () => {
   try {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      closePermissionGuide();
       logEvent("system", "通知权限已授予");
     } else {
       logEvent("system", "通知权限被拒绝");
     }
+    // 无论权限结果如何，都关闭弹窗
+    closePermissionGuide();
   } catch (error) {
     logEvent("system", `请求权限失败: ${error.message}`);
+    // 出错时也关闭弹窗
+    closePermissionGuide();
   }
 };
 
@@ -519,6 +534,25 @@ onMounted(() => {
 
   logEvent("system", "定时提醒功能已启动");
   logEvent("system", `当前系统时间: ${formatDateTime(new Date())}`);
+
+  // 页面加载弹窗功能：每次页面加载时，5秒后自动弹窗
+  // 设置定时器，5秒后自动弹窗
+  setTimeout(() => {
+    const now = new Date();
+    const hour = now.getHours();
+
+    // 根据当前时间判断显示提醒还是警告
+    if (hour >= 21 && hour < 24) {
+      // 提醒时段
+      showReminderModal();
+    } else if (hour >= 0 && hour < 6) {
+      // 警告时段
+      showWarningModal();
+    } else {
+      // 其他时段，默认显示提醒
+      showReminderModal();
+    }
+  }, 5000); // 5秒后弹窗
 });
 
 // 组件卸载时清理
@@ -854,21 +888,42 @@ onUnmounted(() => {
 
 /* 设置按钮 */
 .settings-btn {
-  padding: 10px 15px;
+  /* 增大尺寸和内边距 */
+  padding: 15px;
+  width: 50px;
+  height: 50px;
+  /* 确保图标居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 基础样式 */
   border: none;
   border-radius: 50%;
-  background-color: #3b82f6;
+  /* 渐变背景增强立体感 */
+  background: linear-gradient(145deg, #4361ee, #3b82f6);
   color: white;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
+  /* 多层阴影增强立体感 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  /* 平滑过渡 */
+  transition: all 0.3s ease;
 }
 
 .settings-btn:hover {
-  background-color: #2563eb;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  /* 悬停时的渐变变化 */
+  background: linear-gradient(145deg, #3b82f6, #4361ee);
+  /* 增强阴影和提升效果 */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* 轻微放大和上移 */
+  transform: translateY(-3px) scale(1.05);
+}
+
+.settings-btn:active {
+  /* 点击时的按压效果 */
+  transform: translateY(1px) scale(0.98);
+  /* 减弱阴影，营造按压感 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* 设置内容 */

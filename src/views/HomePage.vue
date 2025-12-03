@@ -84,6 +84,7 @@
       <!-- 认识微生物朋友 -->
       <section class="microbes-section">
         <h3 class="section-title">认识微生物朋友</h3>
+        <h3 class="section-subtitle">常见的微生物</h3>
         <div class="microbes-cards">
           <!-- 循环渲染微生物卡片 -->
           <div class="microbe-card" v-for="(item, idx) in microbes" :key="idx">
@@ -469,6 +470,13 @@ const microbes = ref([
   text-align: center;
   color: #16a34a;
   font-size: 30px;
+  font-weight: bold;
+  margin: 30px 0 20px;
+}
+.section-subtitle {
+  text-align: center;
+  color: #16a34a;
+  font-size: 24px;
   font-weight: bold;
   margin: 30px 0 20px;
 }

@@ -76,6 +76,9 @@
             >{{ gameRecords.successCount || 0 }}次</span
           >
           <span class="game-status" :class="gameStatus.value">{{ gameStatusText }}</span>
+          <button class="reset-count-btn" @click="resetSuccessCount" aria-label="重置成功次数">
+            重置
+          </button>
         </div>
         <div class="reset-btn" @click="resetGame" aria-label="重置游戏">重置游戏</div>
       </div>
@@ -670,6 +673,21 @@ const resetGame = () => {
   startTimer();
 };
 
+// 重置成功计数
+const resetSuccessCount = () => {
+  if (confirm("确定要重置成功次数吗？此操作不可恢复。")) {
+    gameRecords.value.successCount = 0;
+    gameRecords.value.lastCompletionTime = null;
+    saveGameRecord(gameRecords.value);
+
+    // 触发计数更新动画
+    isCountUpdated.value = true;
+    setTimeout(() => {
+      isCountUpdated.value = false;
+    }, 500);
+  }
+};
+
 // 再玩一次
 const playAgain = () => {
   showCompletion.value = false;
@@ -894,9 +912,7 @@ onBeforeUnmount(() => {
 .carousel-item.active {
   opacity: 1;
   border-color: #4caf50;
-  box-shadow:
-    0 0 0 4px rgba(76, 175, 80, 0.3),
-    0 8px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3), 0 8px 16px rgba(0, 0, 0, 0.4);
   transform: translateY(-8px);
 }
 
@@ -1115,6 +1131,26 @@ onBeforeUnmount(() => {
 .success-count .game-status.completed {
   background-color: #4caf50;
   color: white;
+}
+
+.reset-count-btn {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.reset-count-btn:hover {
+  background-color: #f57c00;
+}
+
+.reset-count-btn:active {
+  transform: translateY(1px);
 }
 
 @keyframes countUpdate {

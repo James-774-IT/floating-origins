@@ -209,6 +209,13 @@
                   <!-- <p class="video-desc">{{ video.description }}</p> -->
                 </div>
               </div>
+              <div>
+                <h1>
+                  <p>更多内容敬请期待！😘</p>
+                  <p>❗如有问题，请联系我们！联系时间：10:00-17:00</p>
+                  <p>📮邮箱：yi774yi@163.com</p>
+                </h1>
+              </div>
             </div>
           </div>
         </div>
@@ -216,9 +223,13 @@
 
       <!-- 微生物展示区 -->
       <section class="microbial-showcase">
-        <h3 class="section-title">常见微生物</h3>
+        <h3 class="section-title">微生物大全</h3>
         <div class="microbes-cards">
           <!-- 这里可以添加微生物卡片，与HomePage.vue类似 -->
+          <h2>
+            <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;该版块还在开发中...🐼</p>
+            <p>我们会在后续更新中添加更多的微生物内容，敬请期待！</p>
+          </h2>
         </div>
       </section>
 
@@ -226,7 +237,7 @@
       <footer class="footer">
         <div class="footer-logo">微观奇妙世界</div>
         <p>让孩子与科学更贴近</p>
-        <p class="copyright">©2023 微观奇妙世界 保留所有权利</p>
+        <p class="copyright">©2025 微观奇妙世界 保留所有权利</p>
       </footer>
     </div>
   </div>

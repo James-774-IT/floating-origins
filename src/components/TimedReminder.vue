@@ -49,7 +49,9 @@
           <p class="guide-text">2. 在通知权限中选择"允许"</p>
         </div>
         <div class="modal-footer">
-          <button class="confirm-btn permission-btn" @click="requestNotificationPermission">立即设置</button>
+          <button class="confirm-btn permission-btn" @click="requestNotificationPermission">
+            立即设置
+          </button>
           <button class="cancel-btn" @click="closePermissionGuide">稍后再说</button>
         </div>
       </div>
@@ -67,7 +69,9 @@
           <div class="logs-container">
             <div v-for="(log, index) in logs" :key="index" class="log-item">
               <span class="log-time">{{ log.time }}</span>
-              <span :class="['log-type', log.type]">{{ log.type === 'reminder' ? '提示' : '警告' }}</span>
+              <span :class="['log-type', log.type]">{{
+                log.type === "reminder" ? "提示" : "警告"
+              }}</span>
               <span class="log-status">{{ log.status }}</span>
             </div>
           </div>
@@ -85,7 +89,12 @@
       <div v-if="showSettings" class="settings-content">
         <div class="setting-item">
           <label for="do-not-disturb">免打扰模式</label>
-          <input type="checkbox" id="do-not-disturb" v-model="doNotDisturb" @change="saveSettings">
+          <input
+            type="checkbox"
+            id="do-not-disturb"
+            v-model="doNotDisturb"
+            @change="saveSettings"
+          />
         </div>
         <div class="setting-item">
           <label for="view-logs">查看日志</label>
@@ -97,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 // 状态管理
 const showReminder = ref(false);
@@ -106,9 +115,9 @@ const showPermissionGuide = ref(false);
 const showLogs = ref(false);
 const showSettings = ref(false);
 const doNotDisturb = ref(false);
-const currentTime = ref('');
-const reminderMessage = ref('时间不早啦，该睡觉觉咯，明天再来探索吧！');
-const warningMessage = ref('你不是个好孩子！');
+const currentTime = ref("");
+const reminderMessage = ref("时间不早啦，该睡觉觉咯，明天再来探索吧！");
+const warningMessage = ref("你不是个好孩子！");
 
 // 日志管理
 const logs = ref([]);
@@ -121,7 +130,14 @@ let backgroundTimer = null;
 
 // 计算当前时间格式
 const formatDateTime = (date) => {
-  return date.toISOString().slice(0, 19).replace('T', ' ');
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
 // 记录日志
@@ -129,7 +145,7 @@ const logEvent = (type, status) => {
   const log = {
     time: new Date().toISOString(),
     type,
-    status
+    status,
   };
   logs.value.unshift(log);
 
@@ -139,42 +155,42 @@ const logEvent = (type, status) => {
   }
 
   // 本地存储
-  localStorage.setItem('timedReminderLogs', JSON.stringify(logs.value));
+  localStorage.setItem("timedReminderLogs", JSON.stringify(logs.value));
 };
 
 // 显示提示框
 const showReminderModal = () => {
   if (doNotDisturb.value) {
-    logEvent('reminder', '被免打扰模式阻止');
+    logEvent("reminder", "被免打扰模式阻止");
     return;
   }
 
   currentTime.value = formatDateTime(new Date());
   showReminder.value = true;
-  logEvent('reminder', '成功显示');
+  logEvent("reminder", "成功显示");
 };
 
 // 显示警告框
 const showWarningModal = () => {
   if (doNotDisturb.value) {
-    logEvent('warning', '被免打扰模式阻止');
+    logEvent("warning", "被免打扰模式阻止");
     return;
   }
 
   showWarning.value = true;
-  logEvent('warning', '成功显示');
+  logEvent("warning", "成功显示");
 };
 
 // 关闭提示框
 const closeReminder = () => {
   showReminder.value = false;
-  logEvent('reminder', '用户关闭');
+  logEvent("reminder", "用户关闭");
 };
 
 // 关闭警告框
 const closeWarning = () => {
   showWarning.value = false;
-  logEvent('warning', '用户关闭');
+  logEvent("warning", "用户关闭");
 };
 
 // 关闭权限引导
@@ -190,36 +206,36 @@ const closeLogs = () => {
 // 清空日志
 const clearLogs = () => {
   logs.value = [];
-  localStorage.removeItem('timedReminderLogs');
+  localStorage.removeItem("timedReminderLogs");
 };
 
 // 请求通知权限
 const requestNotificationPermission = async () => {
   try {
     const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
+    if (permission === "granted") {
       closePermissionGuide();
-      logEvent('system', '通知权限已授予');
+      logEvent("system", "通知权限已授予");
     } else {
-      logEvent('system', '通知权限被拒绝');
+      logEvent("system", "通知权限被拒绝");
     }
   } catch (error) {
-    logEvent('system', `请求权限失败: ${error.message}`);
+    logEvent("system", `请求权限失败: ${error.message}`);
   }
 };
 
 // 检测通知权限
 const checkNotificationPermission = () => {
-  if (!('Notification' in window)) {
-    logEvent('system', '浏览器不支持通知');
+  if (!("Notification" in window)) {
+    logEvent("system", "浏览器不支持通知");
     return false;
   }
 
-  if (Notification.permission === 'granted') {
+  if (Notification.permission === "granted") {
     return true;
-  } else if (Notification.permission === 'denied') {
+  } else if (Notification.permission === "denied") {
     showPermissionGuide.value = true;
-    logEvent('system', '通知权限已被拒绝');
+    logEvent("system", "通知权限已被拒绝");
     return false;
   } else {
     requestNotificationPermission();
@@ -256,7 +272,15 @@ const calculateNextReminderTime = () => {
       return nextDay;
     }
 
-    const nextTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextHour, nextMinute, 0, 0);
+    const nextTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      nextHour,
+      nextMinute,
+      0,
+      0
+    );
 
     // 确保下次提醒时间在当前时间之后
     if (nextTime <= now) {
@@ -271,7 +295,15 @@ const calculateNextReminderTime = () => {
         return nextDay;
       } else {
         // 其他情况，下一次是下一个30分钟点
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextHour + 1, nextMinute === 0 ? 30 : 0, 0, 0);
+        return new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          nextHour + 1,
+          nextMinute === 0 ? 30 : 0,
+          0,
+          0
+        );
       }
     }
 
@@ -346,24 +378,24 @@ const checkImmediateReminder = () => {
   const hour = now.getHours();
   const minute = now.getMinutes();
 
-  logEvent('system', `检查是否需要立即触发提醒: ${formatDateTime(now)}`);
+  logEvent("system", `检查是否需要立即触发提醒: ${formatDateTime(now)}`);
 
   // 检查是否在提醒时段（21:00-23:59）
   if (hour >= 21 && hour < 24) {
-    logEvent('system', `当前时间在提醒时段内: ${hour}:${minute}`);
+    logEvent("system", `当前时间在提醒时段内: ${hour}:${minute}`);
     // 检查是否在30分钟的整数倍
     if (minute === 0 || minute === 30) {
-      logEvent('system', `分钟为30的整数倍，触发提醒: ${minute}`);
+      logEvent("system", `分钟为30的整数倍，触发提醒: ${minute}`);
       showReminderModal();
     }
   }
 
   // 检查是否在警告时段（0:00-6:00）
   if (hour >= 0 && hour < 6) {
-    logEvent('system', `当前时间在警告时段内: ${hour}:${minute}`);
+    logEvent("system", `当前时间在警告时段内: ${hour}:${minute}`);
     // 检查是否在整点
     if (minute === 0) {
-      logEvent('system', `分钟为0，触发警告: ${minute}`);
+      logEvent("system", `分钟为0，触发警告: ${minute}`);
       showWarningModal();
     }
   }
@@ -381,7 +413,7 @@ const startReminderTimer = () => {
   const now = new Date();
   const delay = nextReminder - now;
 
-  logEvent('system', `提醒定时器已设置，下次触发时间: ${formatDateTime(nextReminder)}`);
+  logEvent("system", `提醒定时器已设置，下次触发时间: ${formatDateTime(nextReminder)}`);
 
   // 设置定时器，确保延迟时间为正数
   reminderTimer = setTimeout(() => {
@@ -403,7 +435,7 @@ const startWarningTimer = () => {
   const now = new Date();
   const delay = nextWarning - now;
 
-  logEvent('system', `警告定时器已设置，下次触发时间: ${formatDateTime(nextWarning)}`);
+  logEvent("system", `警告定时器已设置，下次触发时间: ${formatDateTime(nextWarning)}`);
 
   // 设置定时器，确保延迟时间为正数
   warningTimer = setTimeout(() => {
@@ -423,15 +455,18 @@ const checkBackgroundTasks = () => {
 
 // 保存设置
 const saveSettings = () => {
-  localStorage.setItem('timedReminderSettings', JSON.stringify({
-    doNotDisturb: doNotDisturb.value
-  }));
-  logEvent('system', `设置已保存: 免打扰模式=${doNotDisturb.value}`);
+  localStorage.setItem(
+    "timedReminderSettings",
+    JSON.stringify({
+      doNotDisturb: doNotDisturb.value,
+    })
+  );
+  logEvent("system", `设置已保存: 免打扰模式=${doNotDisturb.value}`);
 };
 
 // 加载设置
 const loadSettings = () => {
-  const settings = localStorage.getItem('timedReminderSettings');
+  const settings = localStorage.getItem("timedReminderSettings");
   if (settings) {
     const parsedSettings = JSON.parse(settings);
     doNotDisturb.value = parsedSettings.doNotDisturb || false;
@@ -440,7 +475,7 @@ const loadSettings = () => {
 
 // 加载日志
 const loadLogs = () => {
-  const savedLogs = localStorage.getItem('timedReminderLogs');
+  const savedLogs = localStorage.getItem("timedReminderLogs");
   if (savedLogs) {
     logs.value = JSON.parse(savedLogs);
   }
@@ -468,10 +503,10 @@ onMounted(() => {
   backgroundTimer = setInterval(checkBackgroundTasks, 5 * 60 * 1000);
 
   // 监听系统时间变化
-  window.addEventListener('timeupdate', checkBackgroundTasks);
+  window.addEventListener("timeupdate", checkBackgroundTasks);
 
-  logEvent('system', '定时提醒功能已启动');
-  logEvent('system', `当前系统时间: ${formatDateTime(new Date())}`);
+  logEvent("system", "定时提醒功能已启动");
+  logEvent("system", `当前系统时间: ${formatDateTime(new Date())}`);
 });
 
 // 组件卸载时清理
@@ -488,9 +523,9 @@ onUnmounted(() => {
   }
 
   // 移除事件监听
-  window.removeEventListener('timeupdate', checkBackgroundTasks);
+  window.removeEventListener("timeupdate", checkBackgroundTasks);
 
-  logEvent('system', '定时提醒功能已关闭');
+  logEvent("system", "定时提醒功能已关闭");
 });
 </script>
 
@@ -712,7 +747,7 @@ onUnmounted(() => {
 }
 
 .guide-text::before {
-  content: '•';
+  content: "•";
   position: absolute;
   left: 0;
   color: #3b82f6;

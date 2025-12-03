@@ -166,7 +166,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 
 // 游戏状态管理
 const gameState = ref("select-image"); // select-image, select-difficulty, playing
@@ -275,7 +275,6 @@ const puzzlePieces = ref([]);
 const gridSize = ref(5);
 const pieceSize = ref(0);
 const progress = ref(0);
-const isCompleted = ref(false);
 
 // 拖拽相关
 const isDragging = ref(false);
@@ -377,7 +376,6 @@ const initPuzzle = () => {
   gridSize.value = difficulty.gridSize;
 
   const areaWidth = 600;
-  const areaHeight = 600;
   pieceSize.value = Math.floor(areaWidth / difficulty.gridSize);
 
   // 创建拼图碎片
@@ -506,7 +504,7 @@ const endDrag = () => {
 
 // 更新碎片是否正确
 const updatePiecesCorrectness = () => {
-  puzzlePieces.value.forEach((piece, index) => {
+  puzzlePieces.value.forEach((piece) => {
     const correctRow = Math.floor(piece.originalRow);
     const correctCol = Math.floor(piece.originalCol);
     piece.isCorrect = piece.currentRow === correctRow && piece.currentCol === correctCol;
@@ -701,11 +699,6 @@ const navigateToSelectImage = () => {
   progress.value = 0;
 };
 
-// 退出相关方法
-const toggleExitConfirm = () => {
-  showExitConfirm.value = !showExitConfirm.value;
-};
-
 const continueGame = () => {
   showExitConfirm.value = false;
 };
@@ -755,7 +748,7 @@ const toggleInstructions = () => {
 };
 
 // 获取碎片样式
-const getPieceStyle = (piece, index) => {
+const getPieceStyle = (piece) => {
   const difficulty = difficulties.find((d) => d.level === selectedDifficulty.value);
   if (!difficulty || !selectedImage.value) return {};
 
@@ -901,7 +894,9 @@ onBeforeUnmount(() => {
 .carousel-item.active {
   opacity: 1;
   border-color: #4caf50;
-  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3), 0 8px 16px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 4px rgba(76, 175, 80, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.4);
   transform: translateY(-8px);
 }
 

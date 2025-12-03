@@ -108,6 +108,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 
+// 原始消息常量，用于重置消息内容
+const ORIGINAL_REMINDER_MESSAGE = "🤗时间不早啦，该睡觉觉咯😴，明天再来探索吧！🐼";
+const ORIGINAL_WARNING_MESSAGE = "我要生气了💢，快去睡觉❗❗❗，我相信你是最乖的好宝宝😘";
+
 // 状态管理
 const showReminder = ref(false);
 const showWarning = ref(false);
@@ -116,8 +120,8 @@ const showLogs = ref(false);
 const showSettings = ref(false);
 const doNotDisturb = ref(false);
 const currentTime = ref("");
-const reminderMessage = ref("🤗时间不早啦，该睡觉觉咯😴，明天再来探索吧！🐼");
-const warningMessage = ref("我要生气了💢，快去睡觉❗❗❗，我相信你是最乖的好宝宝😘");
+const reminderMessage = ref(ORIGINAL_REMINDER_MESSAGE);
+const warningMessage = ref(ORIGINAL_WARNING_MESSAGE);
 
 // 日志管理
 const logs = ref([]);
@@ -209,12 +213,16 @@ const showWarningModal = () => {
 // 关闭提示框
 const closeReminder = () => {
   showReminder.value = false;
+  // 重置消息内容
+  reminderMessage.value = ORIGINAL_REMINDER_MESSAGE;
   logEvent("reminder", "用户关闭");
 };
 
 // 关闭警告框
 const closeWarning = () => {
   showWarning.value = false;
+  // 重置消息内容
+  warningMessage.value = ORIGINAL_WARNING_MESSAGE;
   logEvent("warning", "用户关闭");
 };
 

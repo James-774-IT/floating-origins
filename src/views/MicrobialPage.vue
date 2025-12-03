@@ -794,8 +794,8 @@ onUnmounted(() => {
 }
 
 /* 微生物视频区 */
-.microbial-categories {
-}
+/* .microbial-categories {
+} */
 
 /* 视频播放器样式 */
 .video-player-container {

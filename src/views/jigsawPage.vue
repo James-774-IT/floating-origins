@@ -4,9 +4,16 @@
     <div v-if="gameState === 'select-image'" class="select-image-container">
       <h2 class="title">选择拼图图片</h2>
       <div class="image-carousel">
-        <button class="carousel-btn prev" @click="prevImage" aria-label="上一张图片">&lt;</button>
+        <button
+          class="carousel-btn prev"
+          @click="prevImage"
+          aria-label="上一张图片"
+          :disabled="currentImageIndex === 0"
+        >
+          &lt;
+        </button>
         <div class="carousel-wrapper">
-          <div class="carousel-items" :style="carouselStyle">
+          <div class="carousel-items">
             <div
               v-for="(image, index) in images"
               :key="index"
@@ -19,7 +26,14 @@
             </div>
           </div>
         </div>
-        <button class="carousel-btn next" @click="nextImage" aria-label="下一张图片">&gt;</button>
+        <button
+          class="carousel-btn next"
+          @click="nextImage"
+          aria-label="下一张图片"
+          :disabled="currentImageIndex === images.length - 1"
+        >
+          &gt;
+        </button>
       </div>
       <button class="confirm-btn" @click="confirmImage" :disabled="!selectedImage">确认选择</button>
     </div>
@@ -275,13 +289,6 @@ const formattedTime = computed(() => {
   return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 });
 
-const carouselStyle = computed(() => {
-  const offset = -currentImageIndex.value * 300;
-  return {
-    transform: `translateX(${offset}px)`,
-  };
-});
-
 const gameStatusText = computed(() => {
   if (gameState.value !== "playing") {
     return "还未开始";
@@ -293,17 +300,44 @@ const gameStatusText = computed(() => {
 });
 
 // 图片选择相关方法
+const scrollToImage = (index) => {
+  nextTick(() => {
+    const carouselWrapper = document.querySelector(".carousel-wrapper");
+    const targetItem = document.querySelector(`.carousel-item:nth-child(${index + 1})`);
+    if (carouselWrapper && targetItem) {
+      const wrapperRect = carouselWrapper.getBoundingClientRect();
+      const itemRect = targetItem.getBoundingClientRect();
+      const scrollPosition =
+        carouselWrapper.scrollLeft +
+        (itemRect.left - wrapperRect.left) -
+        (wrapperRect.width - itemRect.width) / 2;
+
+      carouselWrapper.scrollTo({
+        left: scrollPosition,
+        behavior: "smooth",
+      });
+    }
+  });
+};
+
 const prevImage = () => {
-  currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length;
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+    scrollToImage(currentImageIndex.value);
+  }
 };
 
 const nextImage = () => {
-  currentImageIndex.value = (currentImageIndex.value + 1) % images.length;
+  if (currentImageIndex.value < images.length - 1) {
+    currentImageIndex.value++;
+    scrollToImage(currentImageIndex.value);
+  }
 };
 
 const selectImage = (index) => {
   currentImageIndex.value = index;
   selectedImage.value = images[index];
+  scrollToImage(index);
 };
 
 const confirmImage = () => {
@@ -776,7 +810,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .jigsaw-container {
   font-family: Arial, sans-serif;
-  width: 1440px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f5f5f5;
@@ -811,20 +845,41 @@ onBeforeUnmount(() => {
 }
 
 .carousel-wrapper {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
   height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #2196f3 #f5f5f5;
+}
+
+.carousel-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.carousel-wrapper::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.carousel-wrapper::-webkit-scrollbar-thumb {
+  background: #2196f3;
+  border-radius: 3px;
+}
+
+.carousel-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #1976d2;
 }
 
 .carousel-items {
   display: flex;
-  transition: transform 0.5s ease;
+  transition: none;
   height: 100%;
+  align-items: center;
 }
 
 .carousel-item {
-  flex: 0 0 30%;
-  max-width: 300px;
+  flex: 0 0 300px;
   height: 250px;
   margin: 0 10px;
   border-radius: 8px;
@@ -833,16 +888,21 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
+  opacity: 0.8;
+  border: 3px solid transparent;
 }
 
 .carousel-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
 }
 
 .carousel-item.active {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3), 0 8px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-8px);
 }
 
 .carousel-item img {

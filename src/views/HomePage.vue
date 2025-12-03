@@ -146,7 +146,7 @@
       <footer class="footer">
         <div class="footer-logo">微观奇妙世界</div>
         <p>让孩子与科学更贴近</p>
-        <p class="copyright">©2023 微观奇妙世界 保留所有权利</p>
+        <p class="copyright">©2025 微观奇妙世界 保留所有权利</p>
       </footer>
     </div>
   </div>

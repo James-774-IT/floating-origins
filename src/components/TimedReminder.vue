@@ -543,23 +543,22 @@ onMounted(() => {
   logEvent("system", "定时提醒功能已启动");
   logEvent("system", `当前系统时间: ${formatDateTime(new Date())}`);
 
-  // 页面加载弹窗功能：每次页面加载时，5秒后自动弹窗
+  // 页面加载弹窗功能：仅在规定时间范围内，页面加载后5秒自动弹窗
   // 设置定时器，5秒后自动弹窗
   setTimeout(() => {
     const now = new Date();
     const hour = now.getHours();
+    const minute = now.getMinutes();
 
-    // 根据当前时间判断显示提醒还是警告
+    // 根据当前时间判断是否需要弹窗，仅在规定范围内弹窗
     if (hour >= 21 && hour < 24) {
-      // 提醒时段
+      // 提醒时段（21:00-23:59）
       showReminderModal();
     } else if (hour >= 0 && hour < 6) {
-      // 警告时段
+      // 警告时段（0:00-6:00）
       showWarningModal();
-    } else {
-      // 其他时段，默认显示提醒
-      showReminderModal();
     }
+    // 其他时段不弹窗
   }, 5000); // 5秒后弹窗
 });
 

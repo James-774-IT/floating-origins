@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "lint": "eslint . --fix --cache",
     "deploy": "gh-pages -d dist",
+    "deploy:cloudflare": "wrangler deploy",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -32,6 +33,7 @@
     "jsdom": "^27.2.0",
     "vite": "^7.2.4",
     "vite-plugin-vue-devtools": "^8.0.5",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "wrangler": "^4.52.1"
   }
 }

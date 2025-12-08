@@ -128,6 +128,10 @@
 .parent-section-content {
   text-align: center;
   padding: 0 20px 20px;
+  background: #fff8e1;
+  padding: 20px;
+  margin: 30px 20px;
+  border-radius: 10px;
 }
 
 .section-title {
@@ -151,6 +155,7 @@
   gap: 20px;
   flex-wrap: wrap;
   padding: 0 20px;
+  text-align: left;
 }
 
 .parent-card {
@@ -179,7 +184,6 @@
   display: flex;
   gap: 10px;
 }
-
 .parent-btn {
   border: none;
   background: #e91e63;
@@ -187,14 +191,22 @@
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), -1px -1px 2px rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
 }
-
 .download-btn {
   background: #ff9800;
 }
-
 .join-btn {
   width: 100%;
+}
+.parent-btn:hover {
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4), -0.5px -0.5px 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(1px);
+}
+.parent-btn:active {
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6), inset -1px -1px 2px rgba(255, 255, 255, 0.2);
+  transform: translateY(2px);
 }
 
 .qa-item {
@@ -205,7 +217,7 @@
 
 /* 育儿小贴士区 */
 .tips-section {
-  background: #fff8e1;
+  background: #f6ffee;
   padding: 20px;
   margin: 30px 20px;
   border-radius: 10px;
@@ -213,7 +225,7 @@
 
 .tips-content {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 0;
   text-align: left;
 }
 

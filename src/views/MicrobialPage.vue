@@ -224,12 +224,130 @@
       <!-- 微生物展示区 -->
       <section class="microbial-showcase">
         <h3 class="section-title">微生物大全</h3>
+
+        <!-- 分类导航 -->
+        <div class="classification-nav">
+          <button
+            v-for="(value, key) in MICROBE_CLASSIFICATIONS"
+            :key="key"
+            class="nav-btn"
+            :class="{ active: selectedClassification === value || selectedClassification === '' }"
+            @click="selectedClassification = selectedClassification === value ? '' : value"
+          >
+            {{ value }}
+          </button>
+        </div>
+
+        <!-- 微生物卡片容器 -->
         <div class="microbes-cards">
-          <!-- 这里可以添加微生物卡片，与HomePage.vue类似 -->
-          <h2>
-            <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;该版块还在开发中...🐼</p>
-            <p>我们会在后续更新中添加更多的微生物内容，敬请期待！</p>
-          </h2>
+          <!-- 循环渲染微生物卡片 -->
+          <div
+            class="microbe-card"
+            v-for="(item, idx) in filteredMicrobes"
+            :key="idx"
+            @click="toggleCardExpand(idx)"
+          >
+            <!-- 微生物图标路径 -->
+            <div class="microbe-card-color">
+              <img :src="item.img" :alt="item.name" />
+            </div>
+            <h4>{{ item.name }}</h4>
+            <span class="microbe-tag" :style="{ background: item.tagBg }">{{ item.tag }}</span>
+            <p class="microbe-desc">{{ item.desc }}</p>
+
+            <!-- 展开/折叠按钮 -->
+            <div class="card-expand-btn">
+              <span>{{ expandedCards.includes(idx) ? "收起详情" : "了解更多" }}</span>
+              <span class="expand-icon">{{ expandedCards.includes(idx) ? "▼" : "▶" }}</span>
+            </div>
+
+            <!-- 详细信息区域 -->
+            <div v-if="expandedCards.includes(idx)" class="microbe-details">
+              <div class="detail-item">
+                <strong>分类：</strong>
+                <span>{{ item.classification }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>形态特征：</strong>
+                <span>{{ item.morphology }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>生存环境：</strong>
+                <span>{{ item.habitat }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>生态作用：</strong>
+                <span>{{ item.ecologicalRole }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>与人类关系：</strong>
+                <span>{{ item.humanRelation }}</span>
+              </div>
+              <div class="detail-item interesting-fact">
+                <strong>趣味事实：</strong>
+                <span>{{ item.interestingFact }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 微生物研究意义 -->
+        <div class="microbe-research">
+          <h4 class="research-title">微生物研究的重要意义</h4>
+          <div class="research-content">
+            <p>
+              <strong>医学领域：</strong
+              >微生物研究推动了抗生素、疫苗和基因治疗的发展，帮助人类战胜各种疾病。
+            </p>
+            <p>
+              <strong>农业领域：</strong
+              >有益微生物用于生物肥料、生物防治和发酵饲料，减少化学农药使用，保护环境。
+            </p>
+            <p>
+              <strong>环境领域：</strong
+              >微生物用于污水处理、土壤修复和可再生能源生产，助力可持续发展。
+            </p>
+            <p>
+              <strong>工业领域：</strong
+              >微生物发酵技术用于生产食品、饮料、抗生素和酶制剂，创造巨大经济价值。
+            </p>
+            <p>
+              <strong>科研领域：</strong
+              >微生物作为模式生物，帮助科学家理解生命基本规律，推动生物技术进步。
+            </p>
+          </div>
+        </div>
+
+        <!-- 科普知识拓展 -->
+        <div class="science-extension">
+          <h4 class="extension-title">科普知识拓展</h4>
+          <div class="extension-content">
+            <div class="fun-facts">
+              <h5>趣味小知识</h5>
+              <ul>
+                <li>人体肠道内的微生物数量超过人体细胞总数的10倍！</li>
+                <li>有些微生物可以在-20℃的低温或120℃的高温环境中生存。</li>
+                <li>微生物可以分解塑料，为解决白色污染提供新希望。</li>
+                <li>青霉素的发现是20世纪医学领域最重要的突破之一。</li>
+                <li>微生物参与了地球上90%以上的物质循环过程。</li>
+              </ul>
+            </div>
+            <div class="microbe-faq">
+              <h5>常见问题</h5>
+              <div class="faq-item">
+                <strong>微生物都是有害的吗？</strong>
+                <p>不是，只有少数微生物会引起疾病，大多数微生物对人类和环境有益。</p>
+              </div>
+              <div class="faq-item">
+                <strong>微生物有多小？</strong>
+                <p>大多数微生物的大小在0.1-10微米之间，需要显微镜才能看到。</p>
+              </div>
+              <div class="faq-item">
+                <strong>微生物会进化吗？</strong>
+                <p>是的，微生物进化速度非常快，这也是抗生素耐药性产生的原因之一。</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -278,6 +396,207 @@ const duration = ref("00:00");
 const volume = ref(0.8);
 const isMuted = ref(false);
 let originalVolume = 0.8;
+
+// 微生物分类常量
+const MICROBE_CLASSIFICATIONS = {
+  BACTERIA: "细菌",
+  FUNGI: "真菌",
+  VIRUS: "病毒",
+  ARCHAEA: "古菌",
+  PROTIST: "原生生物",
+};
+
+// 分类选择状态
+const selectedClassification = ref("");
+// 展开的卡片索引
+const expandedCards = ref([]);
+
+// 过滤后的微生物列表
+const filteredMicrobes = computed(() => {
+  if (!selectedClassification.value) {
+    return microbes.value;
+  }
+  return microbes.value.filter(
+    (microbe) => microbe.classification === selectedClassification.value
+  );
+});
+
+// 切换卡片展开/折叠状态
+const toggleCardExpand = (index) => {
+  const cardIndex = expandedCards.value.indexOf(index);
+  if (cardIndex > -1) {
+    expandedCards.value.splice(cardIndex, 1);
+  } else {
+    expandedCards.value.push(index);
+  }
+};
+
+// 微生物数据
+const microbes = ref([
+  // 细菌类
+  {
+    name: "乳酸菌",
+    classification: MICROBE_CLASSIFICATIONS.BACTERIA,
+    tag: "有益菌",
+    tagBg: "#4CAF50",
+    desc: "肠道里的好朋友，帮助消化食物，增强免疫力。",
+    morphology: "呈杆状或球状，无芽孢，革兰氏阳性菌",
+    habitat: "广泛存在于酸奶、泡菜、人体肠道等环境",
+    ecologicalRole: "参与发酵过程，维持生态系统平衡",
+    humanRelation: "用于制作酸奶、泡菜等发酵食品，维持肠道健康",
+    interestingFact: "乳酸菌是最早被人类利用的微生物之一，已有数千年历史",
+    img: new URL("../assets/homeIMG/IMG@rsj.png", import.meta.url).href,
+  },
+  {
+    name: "大肠杆菌",
+    classification: MICROBE_CLASSIFICATIONS.BACTERIA,
+    tag: "条件致病菌",
+    tagBg: "#FFC107",
+    desc: "大部分是无害的，但有些种类会引起腹泻。",
+    morphology: "革兰氏阴性短杆菌，有鞭毛，可运动",
+    habitat: "温血动物肠道、水、土壤等环境",
+    ecologicalRole: "帮助宿主合成维生素K，参与碳氮循环",
+    humanRelation: "某些菌株如O157:H7可引起严重腹泻，多数菌株对人体无害",
+    interestingFact: "大肠杆菌是生物学研究中最常用的模式生物之一",
+    img: new URL("../assets/homeIMG/IMG@dcgj.png", import.meta.url).href,
+  },
+  {
+    name: "链球菌",
+    classification: MICROBE_CLASSIFICATIONS.BACTERIA,
+    tag: "条件致病菌",
+    tagBg: "#FFC107",
+    desc: "有些是有益的，有些会引起咽喉炎等疾病。",
+    morphology: "革兰氏阳性球菌，呈链状排列",
+    habitat: "人体口腔、呼吸道、肠道等部位",
+    ecologicalRole: "参与口腔菌群平衡，某些菌株可分解有机物",
+    humanRelation: "肺炎链球菌可引起肺炎，酿脓链球菌可引起咽喉炎",
+    interestingFact: "链球菌的名称来源于其链状排列的形态特征",
+    img: new URL("../assets/homeIMG/IMG@lqj.png", import.meta.url).href,
+  },
+  {
+    name: "双歧杆菌",
+    classification: MICROBE_CLASSIFICATIONS.BACTERIA,
+    tag: "有益菌",
+    tagBg: "#4CAF50",
+    desc: "维护肠道健康，帮助合成维生素。",
+    morphology: "革兰氏阳性杆菌，呈双歧状分叉",
+    habitat: "人体肠道，尤其是婴儿肠道",
+    ecologicalRole: "抑制有害菌生长，维持肠道微生态平衡",
+    humanRelation: "用于益生菌制剂，改善肠道功能，增强免疫力",
+    interestingFact: "婴儿出生后，双歧杆菌是肠道内最早定植的有益菌之一",
+    img: new URL("../assets/homeIMG/IMG@sjt.png", import.meta.url).href,
+  },
+  {
+    name: "结核杆菌",
+    classification: MICROBE_CLASSIFICATIONS.BACTERIA,
+    tag: "致病菌",
+    tagBg: "#F44336",
+    desc: "引起结核病的病原体，严重威胁人类健康。",
+    morphology: "细长略弯曲的杆菌，抗酸染色阳性",
+    habitat: "主要寄生在人体肺部，也可侵犯其他器官",
+    ecologicalRole: "严格寄生菌，无明显生态作用",
+    humanRelation: "引起肺结核、淋巴结核等疾病，全球每年约有150万人死于结核病",
+    interestingFact: "结核杆菌的细胞壁含有大量脂质，使其具有较强的抵抗力",
+    img: new URL("../assets/homeIMG/IMG@lgbd.png", import.meta.url).href,
+  },
+
+  // 真菌类
+  {
+    name: "酵母菌",
+    classification: MICROBE_CLASSIFICATIONS.FUNGI,
+    tag: "真菌",
+    tagBg: "#FF9800",
+    desc: "让面包变得松软香甜的小魔法师！",
+    morphology: "单细胞真菌，呈球形或椭圆形，有细胞壁",
+    habitat: "广泛存在于水果、花蜜、土壤等含糖环境",
+    ecologicalRole: "参与有机物分解，促进物质循环",
+    humanRelation: "用于酿酒、烘焙、发酵食品生产",
+    interestingFact: "酵母菌是第一种被人类完全测序基因组的真核生物",
+    img: new URL("../assets/homeIMG/IMG@jmj.png", import.meta.url).href,
+  },
+  {
+    name: "青霉菌",
+    classification: MICROBE_CLASSIFICATIONS.FUNGI,
+    tag: "真菌",
+    tagBg: "#FF9800",
+    desc: "产生青霉素的神奇真菌，拯救了无数生命。",
+    morphology: "多细胞真菌，菌丝呈扫帚状排列",
+    habitat: "广泛存在于土壤、空气、腐败有机物上",
+    ecologicalRole: "分解有机物，参与生态系统物质循环",
+    humanRelation: "产生青霉素，开创了抗生素时代，用于治疗细菌感染",
+    interestingFact: "青霉素是第一种被发现的抗生素，由弗莱明于1928年发现",
+    img: new URL("../assets/homeIMG/IMG@shiyan.png", import.meta.url).href,
+  },
+  {
+    name: "蘑菇",
+    classification: MICROBE_CLASSIFICATIONS.FUNGI,
+    tag: "真菌",
+    tagBg: "#FF9800",
+    desc: "美味的食用菌，也是大型真菌的代表。",
+    morphology: "由菌丝体和子实体组成，子实体包括菌盖、菌柄、菌褶等结构",
+    habitat: "森林、草地、腐木等富含有机质的环境",
+    ecologicalRole: "分解木材、落叶等有机物，是森林生态系统的分解者",
+    humanRelation: "可食用，富含蛋白质和多种维生素，部分种类有毒",
+    interestingFact: "世界上最大的生物体是一株蜜环菌，占地面积超过10平方公里",
+    img: new URL("../assets/homeIMG/IMG@pintu.png", import.meta.url).href,
+  },
+
+  // 病毒类
+  {
+    name: "流感病毒",
+    classification: MICROBE_CLASSIFICATIONS.VIRUS,
+    tag: "病毒",
+    tagBg: "#F44336",
+    desc: "引起感冒和流感的小坏蛋，要注意防护哦！",
+    morphology: "球形，有包膜，表面有血凝素和神经氨酸酶刺突",
+    habitat: "主要寄生在人和动物的呼吸道上皮细胞",
+    ecologicalRole: "控制宿主种群数量，促进生物进化",
+    humanRelation: "引起流行性感冒，严重时可导致肺炎和死亡",
+    interestingFact: "流感病毒容易发生变异，因此需要每年接种新的疫苗",
+    img: new URL("../assets/homeIMG/IMG@lgbd.png", import.meta.url).href,
+  },
+  {
+    name: "新冠病毒",
+    classification: MICROBE_CLASSIFICATIONS.VIRUS,
+    tag: "病毒",
+    tagBg: "#F44336",
+    desc: "引起COVID-19的冠状病毒，2019年首次发现。",
+    morphology: "球形，有包膜，表面有刺突蛋白，形似皇冠",
+    habitat: "主要寄生在人体呼吸道和肺部细胞",
+    ecologicalRole: "无明显生态作用，严格寄生病毒",
+    humanRelation: "引起COVID-19疫情，导致全球大流行",
+    interestingFact: "新冠病毒的刺突蛋白是其感染人体细胞的关键结构",
+    img: new URL("../assets/homeIMG/earth-icon.png", import.meta.url).href,
+  },
+
+  // 古菌类
+  {
+    name: "嗜热菌",
+    classification: MICROBE_CLASSIFICATIONS.ARCHAEA,
+    tag: "古菌",
+    tagBg: "#9C27B0",
+    desc: "能在高温环境中生存的神奇微生物。",
+    morphology: "形态多样，包括球形、杆状、螺旋状等",
+    habitat: "温泉、火山口、深海热泉等高温环境",
+    ecologicalRole: "参与高温环境中的物质循环，如硫循环",
+    humanRelation: "用于工业酶生产，如PCR技术中的Taq DNA聚合酶",
+    interestingFact: "某些嗜热菌能在120℃以上的高温环境中生存",
+    img: new URL("../assets/homeIMG/IMG@shiyan.png", import.meta.url).href,
+  },
+  {
+    name: "嗜盐菌",
+    classification: MICROBE_CLASSIFICATIONS.ARCHAEA,
+    tag: "古菌",
+    tagBg: "#9C27B0",
+    desc: "能在高盐环境中茁壮成长的微生物。",
+    morphology: "多呈杆状或球状，部分种类含有红色素",
+    habitat: "盐湖、盐田、海洋等含盐量高的环境",
+    ecologicalRole: "参与高盐环境中的物质循环",
+    humanRelation: "用于生产食品添加剂，如β-胡萝卜素",
+    interestingFact: "嗜盐菌含有特殊的紫色膜，能利用光能产生能量",
+    img: new URL("../assets/homeIMG/earth-icon.png", import.meta.url).href,
+  },
+]);
 
 // 视频选集数据
 const videoList = ref([
@@ -1338,11 +1657,101 @@ onUnmounted(() => {
 :-moz-full-screen .video-player-container,
 :-ms-fullscreen .video-player-container {
   max-width: 100%;
-  width: 100%;
-  height: 100%;
   margin: 0;
-  border-radius: 0;
-  background: #000;
+  padding: 0;
+}
+
+/* 微生物展示区样式 */
+.microbial-showcase {
+  margin: 30px 0;
+}
+
+.microbes-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.microbe-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: calc(33.33% - 20px);
+  min-width: 200px;
+}
+
+.microbe-card-color {
+  background-color: #effbf6;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.microbe-card img {
+  width: 160px;
+  height: 160px;
+  margin-top: 8px;
+  object-fit: contain;
+}
+
+.microbe-tag {
+  display: inline-block;
+  color: #fff;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin: 5px 0;
+}
+
+.microbe-desc {
+  font-size: 13px;
+  color: #666;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+/* .more-btn {
+  border: 1px solid #18e370;
+  color: #fff;
+  background-color: #18e370;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.more-btn:hover {
+  background-color: #13c660;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.more-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .microbe-card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .microbe-card {
+    width: 100%;
+    margin: 0 10px;
+  }
+
+  .microbes-cards {
+    padding: 10px;
+    gap: 15px;
+  }
 }
 
 :fullscreen .video-wrapper,
@@ -1378,17 +1787,396 @@ onUnmounted(() => {
   }
 }
 
-/* 微生物展示区 */
+/* 微生物展示区样式 */
 .microbial-showcase {
-  padding: 20px;
+  margin: 30px 0;
+  padding: 0 20px;
 }
 
+/* 分类导航样式 */
+.classification-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #f0f9ff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border: 2px solid #93c5fd;
+  background-color: #fff;
+  color: #3b82f6;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  background-color: #dbeafe;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.nav-btn.active {
+  background-color: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+/* 微生物卡片样式 */
+.microbe-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: calc(33.33% - 25px);
+  min-width: 280px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.microbe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border-color: #93c5fd;
+}
+
+.microbe-card-color {
+  background-color: #eff6ff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.microbe-card:hover .microbe-card-color {
+  background-color: #dbeafe;
+}
+
+.microbe-card img {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.microbe-card:hover img {
+  transform: scale(1.05);
+}
+
+.microbe-card h4 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #1f2937;
+}
+
+.microbe-tag {
+  display: inline-block;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 15px;
+  margin: 8px 0;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.microbe-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 12px 0;
+  line-height: 1.6;
+  min-height: 48px;
+}
+
+/* 展开/折叠按钮 */
+.card-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 15px 0 10px;
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.card-expand-btn:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.expand-icon {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* 详细信息区域 */
+.microbe-details {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+    overflow: visible;
+  }
+}
+
+.detail-item {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item strong {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.detail-item span {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.detail-item.interesting-fact {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #d1d5db;
+}
+
+.detail-item.interesting-fact strong {
+  color: #f59e0b;
+}
+
+/* 微生物卡片容器 */
 .microbes-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  gap: 25px;
+  padding: 20px 0;
   justify-content: center;
+}
+
+/* 微生物研究意义 */
+.microbe-research {
+  margin: 40px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #bbf7d0;
+}
+
+.research-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #166534;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.research-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.research-content p {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 4px solid #22c55e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.research-content strong {
+  color: #166534;
+  font-weight: 600;
+}
+
+/* 科普知识拓展 */
+.science-extension {
+  margin: 40px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #fcd34d;
+}
+
+.extension-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #92400e;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.extension-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.fun-facts,
+.microbe-faq {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.fun-facts h5,
+.microbe-faq h5 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #92400e;
+  margin-bottom: 15px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #fcd34d;
+}
+
+.fun-facts ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fun-facts li {
+  padding: 12px 0 12px 25px;
+  color: #1f2937;
+  line-height: 1.6;
+  position: relative;
+  border-bottom: 1px solid #fef3c7;
+}
+
+.fun-facts li:last-child {
+  border-bottom: none;
+}
+
+.fun-facts li::before {
+  content: "🌟";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  font-size: 14px;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.faq-item strong {
+  color: #92400e;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.faq-item p {
+  color: #1f2937;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .microbe-card {
+    width: calc(50% - 20px);
+    min-width: 250px;
+  }
+
+  .research-content,
+  .extension-content {
+    grid-template-columns: 1fr;
+  }
+
+  .microbe-research,
+  .science-extension {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .microbe-card {
+    width: 100%;
+    margin: 0;
+    min-width: auto;
+  }
+
+  .microbes-cards {
+    padding: 10px 0;
+    gap: 15px;
+  }
+
+  .microbial-showcase {
+    padding: 0 10px;
+  }
+
+  .classification-nav {
+    padding: 10px 5px;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 8px 15px;
+    font-size: 13px;
+  }
+
+  .microbe-card img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .microbe-research,
+  .science-extension {
+    padding: 15px;
+    margin: 30px 0;
+  }
 }
 
 /* 底部 */

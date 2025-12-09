@@ -93,7 +93,7 @@
             <h4>{{ item.name }}</h4>
             <span class="microbe-tag" :style="{ background: item.tagBg }">{{ item.tag }}</span>
             <p class="microbe-desc">{{ item.desc }}</p>
-            <button class="more-btn">了解更多</button>
+            <!-- <button class="more-btn">了解更多</button> -->
           </div>
         </div>
       </section>
@@ -583,7 +583,7 @@ const microbes = ref([
   color: #666;
   margin: 10px 0;
 }
-.more-btn {
+/* .more-btn {
   border: 1px solid #18e370;
   color: #fff;
   background-color: #4ade80;
@@ -600,7 +600,7 @@ const microbes = ref([
 .more-btn:active {
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6), inset -1px -1px 2px rgba(255, 255, 255, 0.2);
   transform: translateY(2px);
-}
+} */
 
 /* 家长专区 */
 .parent-section {

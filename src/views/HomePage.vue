@@ -125,7 +125,7 @@
               <li>微生物手抄报比赛</li>
               <li>家庭健康饮食计划</li>
             </ul>
-            <button class="parent-btn join-btn">立即参与</button>
+            <button class="parent-btn join-btn" @click="showJoinTip">立即参与</button>
           </div>
           <!-- 专家问答 -->
           <div class="parent-card">
@@ -225,6 +225,11 @@ const search = () => {
     // 清空输入框
     searchText.value = "";
   }
+};
+
+// 显示参与提示
+const showJoinTip = () => {
+  alert("请点击导航栏的家长专区前往页面参加🐼");
 };
 
 // 微生物数据（使用new URL生成正确的图片URL）

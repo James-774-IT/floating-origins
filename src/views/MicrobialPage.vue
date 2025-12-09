@@ -223,7 +223,7 @@
 
       <!-- 微生物展示区 -->
       <section class="microbial-showcase">
-        <h3 class="section-title">微生物大全</h3>
+        <h3 class="section-title">微生物大全(常见)</h3>
 
         <!-- 分类导航 -->
         <div class="classification-nav">
@@ -404,6 +404,7 @@ const MICROBE_CLASSIFICATIONS = {
   VIRUS: "病毒",
   ARCHAEA: "古菌",
   PROTIST: "原生生物",
+  PROKARYOTE: "原核生物",
 };
 
 // 分类选择状态
@@ -484,7 +485,7 @@ const microbes = ref([
     ecologicalRole: "抑制有害菌生长，维持肠道微生态平衡",
     humanRelation: "用于益生菌制剂，改善肠道功能，增强免疫力",
     interestingFact: "婴儿出生后，双歧杆菌是肠道内最早定植的有益菌之一",
-    img: new URL("../assets/homeIMG/IMG@sjt.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@sqgj.png", import.meta.url).href,
   },
   {
     name: "结核杆菌",
@@ -497,7 +498,21 @@ const microbes = ref([
     ecologicalRole: "严格寄生菌，无明显生态作用",
     humanRelation: "引起肺结核、淋巴结核等疾病，全球每年约有150万人死于结核病",
     interestingFact: "结核杆菌的细胞壁含有大量脂质，使其具有较强的抵抗力",
-    img: new URL("../assets/homeIMG/IMG@lgbd.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@jhgj.png", import.meta.url).href,
+  },
+  // 原核生物类
+  {
+    name: "蓝细菌（蓝藻）",
+    classification: MICROBE_CLASSIFICATIONS.PROKARYOTE,
+    tag: "原核生物",
+    tagBg: "#8dd35f",
+    desc: "能进行光合作用的原核生物，是地球上最早的光合生物。",
+    morphology: "单细胞或丝状群体，含有叶绿素a，无叶绿体，有细胞壁。",
+    habitat: "淡水、海水、土壤、岩石表面等各种环境。",
+    ecologicalRole: "产生氧气，固氮作用，是食物链的基础。",
+    humanRelation: "某些种类产生毒素，引发水华；螺旋藻可食用。",
+    interestingFact: "蓝细菌已有35亿年历史，是地球氧气的主要生产者之一。",
+    img: new URL("../assets/jigsawIMG/IMG@8.png", import.meta.url).href,
   },
 
   // 真菌类
@@ -525,7 +540,7 @@ const microbes = ref([
     ecologicalRole: "分解有机物，参与生态系统物质循环",
     humanRelation: "产生青霉素，开创了抗生素时代，用于治疗细菌感染",
     interestingFact: "青霉素是第一种被发现的抗生素，由弗莱明于1928年发现",
-    img: new URL("../assets/homeIMG/IMG@shiyan.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@qmj.png", import.meta.url).href,
   },
   {
     name: "蘑菇",
@@ -538,7 +553,7 @@ const microbes = ref([
     ecologicalRole: "分解木材、落叶等有机物，是森林生态系统的分解者",
     humanRelation: "可食用，富含蛋白质和多种维生素，部分种类有毒",
     interestingFact: "世界上最大的生物体是一株蜜环菌，占地面积超过10平方公里",
-    img: new URL("../assets/homeIMG/IMG@pintu.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@mg.png", import.meta.url).href,
   },
 
   // 病毒类
@@ -566,7 +581,20 @@ const microbes = ref([
     ecologicalRole: "无明显生态作用，严格寄生病毒",
     humanRelation: "引起COVID-19疫情，导致全球大流行",
     interestingFact: "新冠病毒的刺突蛋白是其感染人体细胞的关键结构",
-    img: new URL("../assets/homeIMG/earth-icon.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@xgbd.png", import.meta.url).href,
+  },
+  {
+    name: "噬菌体",
+    classification: MICROBE_CLASSIFICATIONS.VIRUS,
+    tag: "病毒",
+    tagBg: "#F44336",
+    desc: "专门感染细菌的病毒，是地球上数量最多的生物。",
+    morphology: "头部呈多面体，尾部呈管状，含DNA或RNA，无细胞结构。",
+    habitat: "广泛存在于有细菌的环境中，如土壤、水、人体肠道等。",
+    ecologicalRole: "控制细菌种群数量，促进基因水平转移。",
+    humanRelation: "用于噬菌体疗法，治疗耐药细菌感染。",
+    interestingFact: "噬菌体数量超过所有其他生物的总和，每秒有10^23个噬菌体感染细菌。",
+    img: new URL("../assets/homeIMG/IMG@sjt.png", import.meta.url).href,
   },
 
   // 古菌类
@@ -581,7 +609,7 @@ const microbes = ref([
     ecologicalRole: "参与高温环境中的物质循环，如硫循环",
     humanRelation: "用于工业酶生产，如PCR技术中的Taq DNA聚合酶",
     interestingFact: "某些嗜热菌能在120℃以上的高温环境中生存",
-    img: new URL("../assets/homeIMG/IMG@shiyan.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@srj.png", import.meta.url).href,
   },
   {
     name: "嗜盐菌",
@@ -594,7 +622,22 @@ const microbes = ref([
     ecologicalRole: "参与高盐环境中的物质循环",
     humanRelation: "用于生产食品添加剂，如β-胡萝卜素",
     interestingFact: "嗜盐菌含有特殊的紫色膜，能利用光能产生能量",
-    img: new URL("../assets/homeIMG/earth-icon.png", import.meta.url).href,
+    img: new URL("../assets/microbialIMG/IMG@syj.png", import.meta.url).href,
+  },
+
+  // 原生生物类
+  {
+    name: "草履虫",
+    classification: MICROBE_CLASSIFICATIONS.PROTIST,
+    tag: "原生生物",
+    tagBg: "#2196F3",
+    desc: "常见的原生动物，身体呈草鞋状，通过纤毛运动。",
+    morphology: "单细胞真核生物，有纤毛，细胞核分为大核和小核，有伸缩泡。",
+    habitat: "淡水环境，如池塘、湖泊、河流等。",
+    ecologicalRole: "作为食物链的重要环节，控制细菌和藻类数量。",
+    humanRelation: "用于科学研究，水质监测，指示环境污染。",
+    interestingFact: "草履虫可以通过二分裂繁殖，每分钟可以移动1毫米。",
+    img: new URL("../assets/jigsawIMG/IMG@4.png", import.meta.url).href,
   },
 ]);
 

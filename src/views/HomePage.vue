@@ -1,5 +1,24 @@
 <template>
   <div class="home-page">
+    <!-- 自定义弹窗组件 -->
+    <div v-if="showTipModal" class="tip-modal-overlay" @click="closeTipModal">
+      <div class="tip-modal" @click.stop>
+        <div class="tip-modal-header">
+          <h4>提示信息</h4>
+          <button class="tip-modal-close" @click="closeTipModal">×</button>
+        </div>
+        <div class="tip-modal-body">
+          <div class="tip-content">
+            <div class="tip-icon">🐼</div>
+            <p>请点击导航栏的家长专区前往页面参加</p>
+          </div>
+        </div>
+        <div class="tip-modal-footer">
+          <button class="tip-modal-btn" @click="closeTipModal">知道了</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 页面内容容器 -->
     <div class="page-content">
       <!-- 头部 -->
@@ -227,9 +246,17 @@ const search = () => {
   }
 };
 
+// 弹窗状态
+const showTipModal = ref(false);
+
 // 显示参与提示
 const showJoinTip = () => {
-  alert("请点击导航栏的家长专区前往页面参加🐼");
+  showTipModal.value = true;
+};
+
+// 关闭弹窗
+const closeTipModal = () => {
+  showTipModal.value = false;
 };
 
 // 微生物数据（使用new URL生成正确的图片URL）
@@ -689,5 +716,154 @@ const microbes = ref([
 .copyright {
   font-size: 12px;
   opacity: 0.8;
+}
+
+/* 自定义弹窗样式 */
+.tip-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.tip-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+}
+
+.tip-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.tip-modal-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tip-modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.tip-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tip-modal-body {
+  padding: 24px;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.tip-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: bounce 1s infinite;
+}
+
+.tip-content p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.tip-modal-footer {
+  padding: 16px 24px;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.tip-modal-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.tip-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+.tip-modal-btn:active {
+  transform: translateY(0);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
 }
 </style>

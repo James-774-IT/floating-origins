@@ -18,7 +18,11 @@
         </p>
 
         <!-- 微生物科普视频区 -->
-        <div class="video-player-container">
+        <div
+          class="video-player-container"
+          @mousemove="showControls"
+          @mouseleave="scheduleHideControls"
+        >
           <!-- 视频播放区域 -->
           <div class="video-wrapper">
             <video
@@ -27,6 +31,7 @@
               :poster="currentVideo.poster"
               controlsList="nodownload"
               preload="metadata"
+              @click="togglePlay"
             >
               您的浏览器不支持HTML5视频播放
             </video>
@@ -46,8 +51,12 @@
           <!-- 视频控制栏 -->
           <div
             class="video-controls"
-            :class="{ 'ui-hidden': !uiVisible }"
+            :class="{
+              'ui-hidden': !uiVisible && isFullscreen,
+              'fullscreen-controls': isFullscreen,
+            }"
             v-show="uiVisible || !isFullscreen"
+            @mousemove.stop="showControls"
           >
             <!-- 播放/暂停按钮 -->
             <button class="control-btn play-btn" @click="togglePlay">
@@ -185,7 +194,7 @@
           </div>
 
           <!-- 视频选集列表 -->
-          <div class="video-playlist">
+          <div class="video-playlist" v-if="!isFullscreen">
             <h4 class="playlist-title">视频选集</h4>
             <div class="playlist-items">
               <div
@@ -335,48 +344,66 @@ let originalVolume = 0.8;
 const videoList = ref([
   {
     id: 1,
-    title: "大眼博士 微生物篇",
-    description: "介绍微生物的基本概念和分类",
-    url: "./videos/children/大眼博士_微生物.mp4",
-    thumbnail: new URL("../assets/microbialIMG/大眼博士_微生物.png", import.meta.url).href,
-    poster: new URL("../assets/microbialIMG/大眼博士_微生物.png", import.meta.url).href,
-    duration: "03:43",
+    title: "微生物_列文虎克",
+    description: "介绍微生物的发现者列文虎克",
+    url: "./videos/adult/微生物_列文虎克.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物_列文虎克.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物_列文虎克.png", import.meta.url).href,
+    duration: "03:11",
   },
   {
     id: 2,
-    title: "向神秘微观世界进发",
-    description: "深入了解微生物的生活习性",
-    url: "./videos/children/向神秘微观世界进发_1.mp4",
-    thumbnail: new URL("../assets/microbialIMG/向神秘微观世界进发_1.png", import.meta.url).href,
-    poster: new URL("../assets/microbialIMG/向神秘微观世界进发_1.png", import.meta.url).href,
-    duration: "08:52",
+    title: "微生物的分类_前世今生",
+    description: "微生物分类的发展历程",
+    url: "./videos/adult/微生物的分类_前世今生.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物的分类_前世今生.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物的分类_前世今生.png", import.meta.url).href,
+    duration: "46:12",
   },
   {
     id: 3,
-    title: "微生物成员大不同",
-    description: "探索益生菌对人体的益处",
-    url: "./videos/children/微生物成员大不同_2.mp4",
-    thumbnail: new URL("../assets/microbialIMG/微生物成员大不同_2.png", import.meta.url).href,
-    poster: new URL("../assets/microbialIMG/微生物成员大不同_2.png", import.meta.url).href,
-    duration: "09:48",
+    title: "微生物_简单了解English",
+    description: "简单了解微生物的基本知识",
+    url: "./videos/adult/微生物_简单了解English.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物_简单了解English.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物_简单了解English.png", import.meta.url).href,
+    duration: "04:18",
   },
   {
     id: 4,
-    title: "皮肤上的亲密小伙伴",
-    description: "了解病毒的基本结构和传播方式",
-    url: "./videos/children/皮肤上的亲密小伙伴_3.mp4",
-    thumbnail: new URL("../assets/microbialIMG/皮肤上的亲密小伙伴_3.png", import.meta.url).href,
-    poster: new URL("../assets/microbialIMG/皮肤上的亲密小伙伴_3.png", import.meta.url).href,
-    duration: "08:37",
+    title: "微生物_科普微视频",
+    description: "探索微生物在自然界中的重要性",
+    url: "./videos/adult/微生物_科普微视频.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物_科普微视频.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物_科普微视频.png", import.meta.url).href,
+    duration: "03:33",
   },
   {
     id: 5,
-    title: "肚子里的拔河比赛",
-    description: "探索微生物在自然界中的重要性",
-    url: "./videos/children/肚子里的拔河比赛_4.mp4",
-    thumbnail: new URL("../assets/microbialIMG/肚子里的拔河比赛_4.png", import.meta.url).href,
-    poster: new URL("../assets/microbialIMG/肚子里的拔河比赛_4.png", import.meta.url).href,
-    duration: "09:17",
+    title: "微生物_常见",
+    description: "生活中常见的微生物介绍",
+    url: "./videos/adult/微生物_常见.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物_常见.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物_常见.png", import.meta.url).href,
+    duration: "02:19",
+  },
+  {
+    id: 6,
+    title: "微生物_作用",
+    description: "微生物在生态系统中的重要作用",
+    url: "./videos/adult/微生物_作用.mp4",
+    thumbnail: new URL("../assets/parentIMG/微生物_作用.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/微生物_作用.png", import.meta.url).href,
+    duration: "01:42",
+  },
+  {
+    id: 7,
+    title: "地球上没有微生物的话",
+    description: "如果地球上没有微生物会怎样",
+    url: "./videos/adult/地球上没有微生物的话.mp4",
+    thumbnail: new URL("../assets/parentIMG/地球上没有微生物的话.png", import.meta.url).href,
+    poster: new URL("../assets/parentIMG/地球上没有微生物的话.png", import.meta.url).href,
+    duration: "03:40",
   },
 ]);
 
@@ -402,6 +429,7 @@ const togglePlay = () => {
 // 播放状态变化处理
 const handlePlay = () => {
   isPlaying.value = true;
+  showControls();
 };
 
 const handlePause = () => {
@@ -479,6 +507,7 @@ const seekVideoBySlider = (e) => {
   const percent = e.target.value / 100;
   const newTime = percent * videoPlayer.value.duration;
   videoPlayer.value.currentTime = newTime;
+  showControls();
 };
 
 // 进度条点击跳转
@@ -489,6 +518,7 @@ const seekVideoByClick = (e) => {
   const percent = (e.clientX - rect.left) / rect.width;
   const newTime = percent * videoPlayer.value.duration;
   videoPlayer.value.currentTime = newTime;
+  showControls();
 };
 
 // 音量调节
@@ -496,7 +526,8 @@ const updateVolume = () => {
   if (!videoPlayer.value) return;
 
   videoPlayer.value.volume = volume.value;
-  isMuted.value = volume.value < 0.01; // 使用宽松比较，解决浮点数精度问题
+  isMuted.value = volume.value < 0.01;
+  showControls();
 };
 
 // 静音切换
@@ -515,6 +546,7 @@ const toggleMute = () => {
   }
 
   videoPlayer.value.volume = volume.value;
+  showControls();
 };
 
 // 视频选集
@@ -523,6 +555,7 @@ const selectVideo = (index) => {
 
   currentVideoIndex.value = index;
   loadVideo(index);
+  showControls();
 };
 
 // 加载视频
@@ -555,15 +588,32 @@ const reloadVideo = () => {
   loadVideo(currentVideoIndex.value);
 };
 
+// 显示控制栏
+const showControls = () => {
+  uiVisible.value = true;
+  if (isFullscreen.value) {
+    scheduleHideControls();
+  }
+};
+
+// 安排隐藏控制栏
+const scheduleHideControls = () => {
+  if (uiHideTimer) {
+    clearTimeout(uiHideTimer);
+  }
+
+  if (isFullscreen.value) {
+    uiHideTimer = setTimeout(() => {
+      uiVisible.value = false;
+    }, 3000);
+  }
+};
+
 // 全屏切换
 const toggleFullscreen = async () => {
   try {
     fullscreenManager.clearError();
     fullscreenManager.isTransitioning.value = true;
-
-    // 保存当前播放位置
-    const currentTime = videoPlayer.value ? videoPlayer.value.currentTime : 0;
-    const isPlayingState = isPlaying.value;
 
     const container = document.querySelector(".video-player-container");
     const isCurrentlyFullscreen = !!fullscreenAPI.getFullscreenElement();
@@ -575,60 +625,27 @@ const toggleFullscreen = async () => {
       // 进入全屏
       await fullscreenAPI.requestFullscreen(container);
 
-      // 恢复播放位置和状态
-      if (videoPlayer.value) {
-        videoPlayer.value.currentTime = currentTime;
-        if (isPlayingState) {
-          videoPlayer.value.play();
-        }
-      }
-
-      // 进入全屏后立即显示UI并启动3秒自动隐藏定时器
-      resetUIHideTimer();
+      // 进入全屏后立即显示UI并启动自动隐藏定时器
+      showControls();
     } else {
       // 退出全屏
       await fullscreenAPI.exitFullscreen();
 
-      // 恢复播放位置和状态
-      if (videoPlayer.value) {
-        videoPlayer.value.currentTime = currentTime;
-        if (isPlayingState) {
-          videoPlayer.value.play();
-        }
+      // 退出全屏，清除定时器，显示UI
+      if (uiHideTimer) {
+        clearTimeout(uiHideTimer);
+        uiHideTimer = null;
       }
+      uiVisible.value = true;
     }
   } catch (error) {
     console.error("Fullscreen operation failed:", error);
-    fullscreenManager.error.value = error.message;
-    // 显示友好提示
     alert(`全屏操作失败: ${error.message}`);
   } finally {
-    // 使用requestAnimationFrame确保状态更新在渲染循环中
     requestAnimationFrame(() => {
       fullscreenManager.isTransitioning.value = false;
     });
   }
-};
-
-// 显示UI
-const showUI = () => {
-  uiVisible.value = true;
-};
-
-// 隐藏UI
-const hideUI = () => {
-  if (isFullscreen.value) {
-    uiVisible.value = false;
-  }
-};
-
-// 重置UI隐藏定时器
-const resetUIHideTimer = () => {
-  if (uiHideTimer) {
-    clearTimeout(uiHideTimer);
-  }
-  showUI();
-  uiHideTimer = setTimeout(hideUI, 3000);
 };
 
 // 全屏状态变化处理
@@ -638,14 +655,14 @@ const handleFullscreenChange = () => {
 
   if (newFullscreenState) {
     // 进入全屏，启动UI隐藏定时器
-    resetUIHideTimer();
+    showControls();
   } else {
     // 退出全屏，清除定时器，显示UI
     if (uiHideTimer) {
       clearTimeout(uiHideTimer);
       uiHideTimer = null;
     }
-    showUI();
+    uiVisible.value = true;
     // 恢复滚动位置
     fullscreenManager.restoreScrollPositions();
   }
@@ -670,13 +687,6 @@ onMounted(() => {
   // 监听全屏变化
   fullscreenAPI.addFullscreenChangeListener(handleFullscreenChange);
 
-  // 监听鼠标移动和点击事件，重置UI隐藏定时器
-  const videoContainer = document.querySelector(".video-player-container");
-  if (videoContainer) {
-    videoContainer.addEventListener("mousemove", resetUIHideTimer);
-    videoContainer.addEventListener("click", resetUIHideTimer);
-  }
-
   // 初始化加载第一个视频
   loadVideo(0);
 });
@@ -696,13 +706,6 @@ onUnmounted(() => {
 
   // 移除全屏监听器
   fullscreenAPI.removeFullscreenChangeListener(handleFullscreenChange);
-
-  // 移除鼠标事件监听器
-  const videoContainer = document.querySelector(".video-player-container");
-  if (videoContainer) {
-    videoContainer.removeEventListener("mousemove", resetUIHideTimer);
-    videoContainer.removeEventListener("click", resetUIHideTimer);
-  }
 
   // 清除UI隐藏定时器
   if (uiHideTimer) {
@@ -835,9 +838,6 @@ onUnmounted(() => {
 .download-btn {
   background: #ff9800;
 }
-/* .join-btn {
-  width: 100%;
-} */
 .parent-btn:hover {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4), -0.5px -0.5px 1px rgba(255, 255, 255, 0.1);
   transform: translateY(1px);
@@ -902,6 +902,7 @@ onUnmounted(() => {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
 }
 
 /* 视频播放区域 */
@@ -911,6 +912,7 @@ onUnmounted(() => {
   background: #000;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .video-element {
@@ -995,31 +997,32 @@ onUnmounted(() => {
 .video-controls {
   display: flex;
   align-items: center;
-  background: #2c3e50;
+  background: rgba(44, 62, 80, 0.95);
   padding: 10px 15px;
   gap: 10px;
   transition: opacity 0.3s ease, transform 0.3s ease;
   opacity: 1;
   transform: translateY(0);
+  z-index: 100;
+  position: relative;
 }
 
-/* 全屏模式下UI隐藏样式 */
-:fullscreen .video-controls,
-:-webkit-full-screen .video-controls,
-:-moz-full-screen .video-controls,
-:-ms-fullscreen .video-controls {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* 全屏控制栏样式 */
+.video-controls.fullscreen-controls {
+  background: rgba(0, 0, 0, 0.85);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 15px 20px;
+  z-index: 1000;
 }
 
 /* UI隐藏状态 */
-:fullscreen .video-controls.ui-hidden,
-:-webkit-full-screen .video-controls.ui-hidden,
-:-moz-full-screen .video-controls.ui-hidden,
-:-ms-fullscreen .video-controls.ui-hidden {
+.video-controls.ui-hidden {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
   pointer-events: none;
 }
 
@@ -1035,6 +1038,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .control-btn:hover {
@@ -1047,6 +1051,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0;
 }
 
 .progress-slider {
@@ -1059,6 +1064,7 @@ onUnmounted(() => {
   outline: none;
   transition: height 0.2s ease;
   cursor: pointer;
+  --progress: 0%;
 }
 
 .progress-slider:hover {
@@ -1133,6 +1139,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .volume-slider-container {
@@ -1148,6 +1155,8 @@ onUnmounted(() => {
   border-radius: 3px;
   outline: none;
   cursor: pointer;
+  opacity: 1;
+  visibility: visible;
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -1173,15 +1182,14 @@ onUnmounted(() => {
 
 /* 视频选集样式 */
 .video-playlist {
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #eee;
+  padding: 20px;
+  background: #fafafa;
 }
 
 .playlist-title {
   margin: 0 0 15px 0;
-  font-size: 16px;
   color: #333;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -1190,37 +1198,41 @@ onUnmounted(() => {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 15px;
+  justify-content: flex-start;
 }
 
+/* 选集项样式 */
 .playlist-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 10px;
+  background: #fff;
   border-radius: 8px;
-  background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 2px solid transparent;
   width: 200px;
   flex-shrink: 0;
 }
 
 .playlist-item:hover {
-  background: #e8f4f8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .playlist-item.active {
-  background: #d1ecf1;
-  border: 2px solid #17a2b8;
+  border-color: #4a90e2;
+  background: #f0f8ff;
 }
 
+/* 选集项样式 */
 .playlist-item-thumbnail {
   position: relative;
   width: 100%;
   height: 112px;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -1229,6 +1241,11 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.playlist-item:hover .playlist-item-thumbnail img {
+  transform: scale(1.05);
 }
 
 .video-duration {
@@ -1244,29 +1261,79 @@ onUnmounted(() => {
 
 .playlist-item-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   min-width: 0;
+  text-align: center;
 }
 
 .video-title {
   margin: 0;
+  color: #333;
   font-size: 14px;
   font-weight: bold;
-  color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
 }
 
-.video-desc {
+/* 全屏模式特殊样式 */
+/* 全屏模式样式 */
+:fullscreen .video-player-container,
+:-webkit-full-screen .video-player-container,
+:-moz-full-screen .video-player-container,
+:-ms-fullscreen .video-player-container {
+  max-width: 100%;
   margin: 0;
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  padding: 0;
+  background: #000;
+  border-radius: 0;
+}
+
+:fullscreen .video-wrapper,
+:-webkit-full-screen .video-wrapper,
+:-moz-full-screen .video-wrapper,
+:-ms-fullscreen .video-wrapper {
+  aspect-ratio: unset;
+  height: calc(100vh - 60px);
+}
+
+:fullscreen .video-element,
+:-webkit-full-screen .video-element,
+:-moz-full-screen .video-element,
+:-ms-fullscreen .video-element {
+  object-fit: contain;
+}
+
+/* 全屏模式下视频控制栏默认样式 */
+:fullscreen .video-controls,
+:-webkit-full-screen .video-controls,
+:-moz-full-screen .video-controls,
+:-ms-fullscreen .video-controls {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.85);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 全屏模式下UI隐藏状态 */
+:fullscreen .video-controls.ui-hidden,
+:-webkit-full-screen .video-controls.ui-hidden,
+:-moz-full-screen .video-controls.ui-hidden,
+:-ms-fullscreen .video-controls.ui-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+:fullscreen .video-playlist,
+:-webkit-full-screen .video-playlist,
+:-moz-full-screen .video-playlist,
+:-ms-fullscreen .video-playlist {
+  display: none;
 }
 
 /* 响应式设计 */
@@ -1291,6 +1358,20 @@ onUnmounted(() => {
 
   .video-title {
     font-size: 13px;
+  }
+
+  .volume-container .volume-slider-container {
+    display: none;
+  }
+
+  .volume-container:hover .volume-slider-container {
+    display: block;
+    position: absolute;
+    bottom: 60px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 5px;
   }
 }
 

@@ -573,6 +573,12 @@ const loadVideo = (index) => {
   progress.value = 0;
   currentTime.value = "00:00";
 
+  // 手动更新进度条CSS变量
+  const progressSlider = document.querySelector(".progress-slider");
+  if (progressSlider) {
+    progressSlider.style.setProperty("--progress", "0%");
+  }
+
   // 设置视频源
   videoPlayer.value.src = video.url;
 

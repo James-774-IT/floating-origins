@@ -9,8 +9,8 @@
         </div>
         <div class="tip-modal-body">
           <div class="tip-content">
-            <div class="tip-icon">🐼</div>
-            <p>请点击导航栏的家长专区前往页面参加</p>
+            <div class="tip-icon">{{ iconMap }}</div>
+            <p>{{ tipModalContent }}</p>
           </div>
         </div>
         <div class="tip-modal-footer">
@@ -24,7 +24,7 @@
       <!-- 头部 -->
       <header class="header-section">
         <div class="header-icon">
-          <!-- 替换为实际地球图标路径 -->
+          <!-- 地球图标路径 -->
           <img class="rotate-image" src="../assets/homeIMG/earth-icon.png" alt="地球图标" />
         </div>
       </header>
@@ -128,11 +128,11 @@
               <li>儿童微生物科普手册</li>
               <li>家庭微生物实验指南</li>
               <li>益生菌与健康的关系</li>
-              <li>微生物世界相关视频</li>
+              <li>...</li>
             </ul>
             <div class="resource-btns">
-              <button class="parent-btn">在线查看</button>
-              <button class="parent-btn download-btn">立即下载</button>
+              <!-- <button class="parent-btn">在线查看</button> -->
+              <button class="parent-btn download-btn" @click="showDownloadTip">立即下载</button>
             </div>
           </div>
           <!-- 亲子活动 -->
@@ -142,7 +142,7 @@
               <li>制作酸奶观察乳酸菌</li>
               <li>显微镜下的水滴世界</li>
               <li>微生物手抄报比赛</li>
-              <li>家庭健康饮食计划</li>
+              <li>...</li>
             </ul>
             <button class="parent-btn join-btn" @click="showJoinTip">立即参与</button>
           </div>
@@ -248,15 +248,27 @@ const search = () => {
 
 // 弹窗状态
 const showTipModal = ref(false);
+const tipModalContent = ref("");
+const iconMap = ref("");
 
 // 显示参与提示
 const showJoinTip = () => {
+  tipModalContent.value = "请点击导航栏的家长专区前往页面参加";
   showTipModal.value = true;
+  iconMap.value = "🐼";
+};
+
+// 显示下载提示
+const showDownloadTip = () => {
+  tipModalContent.value = "请点击导航栏的家长专区前往页面下载";
+  showTipModal.value = true;
+  iconMap.value = "🌞";
 };
 
 // 关闭弹窗
 const closeTipModal = () => {
   showTipModal.value = false;
+  tipModalContent.value = "";
 };
 
 // 微生物数据（使用new URL生成正确的图片URL）
@@ -682,6 +694,7 @@ const microbes = ref([
 }
 .download-btn {
   background: #ff9800;
+  width: 100%;
 }
 .join-btn {
   width: 100%;

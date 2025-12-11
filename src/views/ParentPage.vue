@@ -5,7 +5,7 @@
       <!-- 头部 -->
       <header class="header-section">
         <div class="header-icon">
-          <!-- 替换为实际家长专区图标路径 -->
+          <!-- 家长专区图标路径 -->
           <img src="../assets/homeIMG/earth-icon.png" alt="家长专区图标" />
         </div>
       </header>
@@ -284,12 +284,56 @@
 
       <!-- 育儿小贴士 -->
       <section class="tips-section">
-        <h3 class="section-title">育儿小贴士</h3>
-        <div class="tips-content">
-          <p>1. 鼓励孩子提问，培养科学探索精神</p>
-          <p>2. 利用日常生活中的例子讲解微生物知识</p>
-          <p>3. 参与亲子实验，增强孩子的动手能力</p>
-          <p>4. 引导孩子养成良好的卫生习惯</p>
+        <div class="div-root">
+          <div class="div-one">
+            <h3 class="section-title">育儿小贴士</h3>
+            <div class="tips-content">
+              <p>1. 鼓励孩子提问，培养科学探索精神</p>
+              <p>2. 利用日常生活中的例子讲解微生物知识</p>
+              <p>3. 参与亲子实验，增强孩子的动手能力</p>
+              <p>4. 引导孩子养成良好的卫生习惯</p>
+              <p>5. 注意孩子的安全，避免伤害</p>
+              <p>6. 与孩子分享科学知识，培养兴趣</p>
+              <p>7. 定期检查孩子的卫生习惯，及时发现问题</p>
+              <p>8. 与孩子分享实验结果，培养实验精神</p>
+            </div>
+          </div>
+          <div class="div-two">
+            <!-- 用户讨论区域 -->
+            <div class="discussion-container">
+              <h4 class="discussion-title">用户讨论</h4>
+
+              <!-- 发言内容列表 -->
+              <div class="discussion-messages" ref="discussionMessages">
+                <div v-for="(message, index) in messages" :key="index" class="message-item">
+                  <div class="message-avatar">
+                    <img :src="message.avatar" :alt="message.username" />
+                  </div>
+                  <div class="message-content">
+                    <div class="message-header">
+                      <span class="message-username">{{ message.username }}</span>
+                      <span class="message-time">{{ message.time }}</span>
+                    </div>
+                    <div class="message-text">{{ message.content }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 发言输入区域 -->
+              <div class="discussion-input-area">
+                <textarea
+                  class="message-input"
+                  placeholder="请输入您的发言..."
+                  v-model="newMessage"
+                  @keydown.enter="sendMessage"
+                  rows="2"
+                ></textarea>
+                <button class="send-btn" @click="sendMessage" :disabled="!newMessage.trim()">
+                  发送
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -318,6 +362,91 @@ const hasError = ref(false);
 const errorMessage = ref("");
 const currentVideoIndex = ref(0);
 const uiVisible = ref(true);
+
+// 讨论区域相关
+const messages = ref([
+  {
+    id: 1,
+    username: "家长A",
+    avatar: "https://randomuser.me/api/portraits/women/32.jpg",
+    content: "这个视频内容很适合孩子观看，学到了很多微生物知识！",
+    time: "14:30",
+  },
+  {
+    id: 2,
+    username: "家长B",
+    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+    content: "是的，我家孩子看了之后对微生物产生了浓厚的兴趣，一直问我各种问题。",
+    time: "14:35",
+  },
+  {
+    id: 3,
+    username: "家长C",
+    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    content: "希望能多更新一些类似的科普视频，谢谢！",
+    time: "14:40",
+  },
+]);
+const newMessage = ref("");
+const discussionMessages = ref(null);
+const nextMessageId = ref(4);
+
+// 模拟用户列表
+const users = [
+  { name: "家长A", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+  { name: "家长B", avatar: "https://randomuser.me/api/portraits/men/45.jpg" },
+  { name: "家长C", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+  { name: "家长D", avatar: "https://randomuser.me/api/portraits/men/22.jpg" },
+  { name: "家长E", avatar: "https://randomuser.me/api/portraits/women/19.jpg" },
+];
+
+// 生成随机用户名和头像
+const getRandomUser = () => {
+  const randomIndex = Math.floor(Math.random() * users.length);
+  return users[randomIndex];
+};
+
+// 格式化当前时间
+const formatCurrentTime = () => {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
+// 自动滚动到底部
+const scrollToBottom = () => {
+  if (discussionMessages.value) {
+    discussionMessages.value.scrollTop = discussionMessages.value.scrollHeight;
+  }
+};
+
+// 发送消息
+const sendMessage = () => {
+  if (!newMessage.value.trim()) return;
+
+  const user = getRandomUser();
+  const message = {
+    id: nextMessageId.value++,
+    username: user.name,
+    avatar: user.avatar,
+    content: newMessage.value.trim(),
+    time: formatCurrentTime(),
+  };
+
+  messages.value.push(message);
+  newMessage.value = "";
+
+  // 延迟滚动，确保DOM更新完成
+  setTimeout(() => {
+    scrollToBottom();
+  }, 100);
+};
+
+// 组件挂载后滚动到底部
+onMounted(() => {
+  scrollToBottom();
+});
 
 // 使用全屏管理器的状态
 const isFullscreen = computed(() => fullscreenManager.isFullscreen.value);
@@ -866,6 +995,27 @@ onUnmounted(() => {
   margin: 30px 20px;
   border-radius: 10px;
 }
+.div-root {
+  display: flex;
+  justify-content: left;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.div-one {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  width: 300px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.div-two {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  width: 733px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
 .tips-content {
   max-width: 800px;
@@ -877,6 +1027,219 @@ onUnmounted(() => {
   margin: 10px 0;
   font-size: 16px;
   line-height: 1.6;
+}
+
+/* 讨论区域样式 */
+.discussion-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 400px;
+}
+
+.discussion-title {
+  color: #e91e63;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.discussion-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding-right: 10px;
+  max-height: 400px;
+}
+
+/* 自定义滚动条 */
+.discussion-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.discussion-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.discussion-messages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.discussion-messages::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+.message-item {
+  display: flex;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.message-avatar {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.message-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e6f7ff;
+}
+
+.message-content {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.message-username {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.message-text {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+  word-break: break-word;
+}
+
+.discussion-input-area {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.message-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  resize: none;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.message-input:focus {
+  border-color: #e91e63;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.message-input::placeholder {
+  color: #999;
+}
+
+.send-btn {
+  padding: 12px 20px;
+  background: #e91e63;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #d81b60;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.3);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(233, 30, 99, 0.3);
+}
+
+.send-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+  .div-root {
+    flex-direction: column;
+  }
+
+  .div-one,
+  .div-two {
+    width: 100%;
+  }
+
+  .discussion-messages {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .discussion-container {
+    min-height: 300px;
+  }
+
+  .discussion-messages {
+    max-height: 250px;
+  }
+
+  .discussion-input-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .send-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 576px) {
+  .discussion-messages {
+    max-height: 200px;
+  }
+
+  .message-avatar img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .message-content {
+    padding: 10px;
+  }
 }
 
 /* 底部 */

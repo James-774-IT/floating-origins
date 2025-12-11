@@ -5,7 +5,7 @@
       <!-- 头部 -->
       <header class="header-section">
         <div class="header-icon">
-          <!-- 替换为实际微生物图标路径 -->
+          <!-- 微生物图标路径 -->
           <img src="../assets/homeIMG/earth-icon.png" alt="微生物图标" />
         </div>
       </header>
